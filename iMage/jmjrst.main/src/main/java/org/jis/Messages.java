@@ -32,14 +32,14 @@ public class Messages implements Serializable {
 
   private static final String   BUNDLE_NAME = "org.jis.messages";
 
-  private ResourceBundle RESOURCE_BUNDLE;
+  private ResourceBundle resourceBundle;
 
   /**
    * @param l
    *          the locale to use the correct resource bundle
    */
   public Messages(Locale l) {
-    RESOURCE_BUNDLE = ResourceBundle.getBundle(BUNDLE_NAME, l);
+    resourceBundle = ResourceBundle.getBundle(BUNDLE_NAME, l);
   }
 
   /**
@@ -51,7 +51,7 @@ public class Messages implements Serializable {
   {
     try
     {
-      return RESOURCE_BUNDLE.getString(key);
+      return resourceBundle.getString(key);
     }
     catch (MissingResourceException e)
     {

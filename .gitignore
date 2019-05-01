@@ -46,3 +46,6 @@ __MACOSX/
 
 # Windows
 Thumbs.db
+
+# vscode
+.vscode

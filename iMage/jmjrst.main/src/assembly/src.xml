@@ -6,10 +6,19 @@
 	<formats>
 		<format>zip</format>
 	</formats>
+  	<files>
+	 	<file>
+			<source>../../.gitignore</source>
+			<filtered>false</filtered>
+		</file>
+	</files>
 	<fileSets>
 		<fileSet>
 			<includes>
 				<include>pom.xml</include>
+				<include>../../.gitignore</include>
+				<include>LICENCE</include>
+				<include>*.launch</include>
 			</includes>
 		</fileSet>
 

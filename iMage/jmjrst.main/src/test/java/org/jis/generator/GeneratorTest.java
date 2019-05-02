@@ -44,4 +44,12 @@ public class GeneratorTest {
     public void rotateImageTestImageNoRotate() {
         assertSame(image, generator.rotateImage(image, 0.0));
     }
+    
+    /**
+     * Tests for Illegal Argument
+     */
+    @Test(expected = IllegalArgumentException.class)
+    public void rotateImageTestIllegalArgument() {
+        generator.rotateImage(image, 0.42);
+    }
 }

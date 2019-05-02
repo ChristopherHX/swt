@@ -9,9 +9,12 @@ import static org.junit.Assert.assertSame;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.imageio.ImageIO;
 
+import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -22,6 +25,8 @@ public class GeneratorTest {
     private static Generator generator;
     private static BufferedImage image;
 
+    private BufferedImage nimage = null;
+
     /**
      * Prepares Generator and BufferedImage objects for all Tests
      * @throws IOException image.png not found
@@ -30,6 +35,22 @@ public class GeneratorTest {
     public static void setUp() throws IOException {
         generator = new Generator(null, 0);
         image = ImageIO.read(new File(GeneratorTest.class.getResource("/image.jpg").getFile()));
+    }
+
+    /**
+     * Saves all rotated Images
+     * @throws IOException rotated image couldn't be saved
+     */
+    @After
+    public void tearDown()  throws IOException  {
+        if (nimage != null) {
+            var dir = new File("target/test");
+            if (!dir.exists()) {
+                dir.mkdir();
+            }
+            ImageIO.write(nimage, "jpg", new File(String.format("target/test/image_rotated_%s.jpg", 
+            new SimpleDateFormat("MM-dd_HH.mm.ss.SSS").format(new Date()))));
+        }
     }
 
     /**
@@ -61,7 +82,7 @@ public class GeneratorTest {
      */
     @Test
     public void rotateImageTestRotate90() {
-        var nimage = generator.rotateImage(image, Math.PI / 2);
+        nimage = generator.rotateImage(image, Math.PI / 2);
         assertNotNull(nimage);
         assertNotSame(nimage, image);
         assertEquals(image.getHeight(), nimage.getWidth());
@@ -79,7 +100,7 @@ public class GeneratorTest {
      */
     @Test
     public void rotateImageTestRotate270() {
-        var nimage = generator.rotateImage(image, 3 * Math.PI / 2);
+        nimage = generator.rotateImage(image, 3 * Math.PI / 2);
         assertNotNull(nimage);
         assertNotSame(nimage, image);
         assertEquals(image.getHeight(), nimage.getWidth());
@@ -97,7 +118,7 @@ public class GeneratorTest {
      */
     @Test
     public void rotateImageTestRotateM270() {
-        var nimage = generator.rotateImage(image, -3 * Math.PI / 2);
+        nimage = generator.rotateImage(image, -3 * Math.PI / 2);
         assertNotNull(nimage);
         assertNotSame(nimage, image);
         assertEquals(image.getHeight(), nimage.getWidth());
@@ -115,7 +136,7 @@ public class GeneratorTest {
      */
     @Test
     public void rotateImageTestRotateM90() {
-        var nimage = generator.rotateImage(image, -Math.PI / 2);
+        nimage = generator.rotateImage(image, -Math.PI / 2);
         assertNotNull(nimage);
         assertNotSame(nimage, image);
         assertEquals(image.getHeight(), nimage.getWidth());

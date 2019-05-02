@@ -1,5 +1,8 @@
 package org.jis.generator;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 
@@ -51,5 +54,23 @@ public class GeneratorTest {
     @Test(expected = IllegalArgumentException.class)
     public void rotateImageTestIllegalArgument() {
         generator.rotateImage(image, 0.42);
+    }
+
+    /**
+     * Tests rotate 90°
+     */
+    @Test
+    public void rotateImageTestRotate90() {
+        var nimage = generator.rotateImage(image, Math.PI / 2);
+        assertNotNull(nimage);
+        assertNotSame(nimage, image);
+        assertEquals(image.getHeight(), nimage.getWidth());
+        assertEquals(image.getWidth(), nimage.getHeight());
+        for (int j = 0; j < image.getHeight(); j++) {
+            for (int i = 0; i < image.getWidth(); i++) {
+                assertEquals("False Image i=" + i + " j=" + j, image.getRGB(i, j),
+                nimage.getRGB(nimage.getWidth() - 1 - j, i));
+            }
+        }
     }
 }

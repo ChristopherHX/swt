@@ -16,6 +16,14 @@
     <maven.compiler.target>11</maven.compiler.target>
   </properties>
 
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
   <parent>
     <groupId>swt1</groupId>
     <artifactId>edu.kit.ipd.swt1.ss2019</artifactId>

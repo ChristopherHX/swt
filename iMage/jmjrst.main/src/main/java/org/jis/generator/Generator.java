@@ -719,7 +719,7 @@ public class Generator {
 
   public BufferedImage rotateImage(BufferedImage image, double rotate)
   {
-    if (rotate == 0) return image;
+    if (rotate == 0 || rotate == -0) return image;
 
     AffineTransform transform = new AffineTransform();
 
@@ -727,14 +727,14 @@ public class Generator {
     int width = image.getWidth(null);
     int height = image.getHeight(null);
 
-    if (rotate == Generator.ROTATE_90)
+    if (rotate == Generator.ROTATE_90 || rotate == -Generator.ROTATE_270)
     {
       transform.translate(height, 0);
       transform.rotate(Generator.ROTATE_90);
       width = image.getHeight(); // swap
       height = image.getWidth();
     }
-    else if (rotate == Generator.ROTATE_270)
+    else if (rotate == Generator.ROTATE_270 || rotate == -Generator.ROTATE_90)
     {
       transform.translate(0, width);
       transform.rotate(Generator.ROTATE_270);

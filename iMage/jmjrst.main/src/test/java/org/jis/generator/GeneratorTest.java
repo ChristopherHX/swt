@@ -97,7 +97,7 @@ public class GeneratorTest {
      */
     @Test
     public void rotateImageTestRotateM270() {
-        var nimage = generator.rotateImage(image, -Math.PI / 2);
+        var nimage = generator.rotateImage(image, -3 * Math.PI / 2);
         assertNotNull(nimage);
         assertNotSame(nimage, image);
         assertEquals(image.getHeight(), nimage.getWidth());
@@ -115,7 +115,7 @@ public class GeneratorTest {
      */
     @Test
     public void rotateImageTestRotateM90() {
-        var nimage = generator.rotateImage(image, -3 * Math.PI / 2);
+        var nimage = generator.rotateImage(image, -Math.PI / 2);
         assertNotNull(nimage);
         assertNotSame(nimage, image);
         assertEquals(image.getHeight(), nimage.getWidth());

@@ -73,4 +73,22 @@ public class GeneratorTest {
             }
         }
     }
+
+    /**
+     * Tests rotate 270
+     */
+    @Test
+    public void rotateImageTestRotate270() {
+        var nimage = generator.rotateImage(image, 3 * Math.PI / 2);
+        assertNotNull(nimage);
+        assertNotSame(nimage, image);
+        assertEquals(image.getHeight(), nimage.getWidth());
+        assertEquals(image.getWidth(), nimage.getHeight());
+        for (int j = 0; j < image.getHeight(); j++) {
+            for (int i = 0; i < image.getWidth(); i++) {
+                assertEquals("False Image i=" + i + " j=" + j, image.getRGB(i, j),
+                nimage.getRGB(j, nimage.getHeight() - 1 - i));
+            }
+        }
+    }
 }

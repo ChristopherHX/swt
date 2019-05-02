@@ -1,6 +1,7 @@
 package org.jis.generator;
 
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -34,5 +35,13 @@ public class GeneratorTest {
     @Test
     public void rotateImageTestImageIsNullNoRotate() {
         assertNull(generator.rotateImage(null, 0.0));
+    }
+    
+    /**
+     * Tests rotating sample Image without rotate
+     */
+    @Test
+    public void rotateImageTestImageNoRotate() {
+        assertSame(image, generator.rotateImage(image, 0.0));
     }
 }

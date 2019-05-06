@@ -197,12 +197,25 @@ public class GeneratorTest {
      * @throws IOException output image couldn't be written / read / no outputfile
      */
     @Test
-    public void generateImageTestResize() throws IOException {
+    public void generateImageTestResizeSmaller() throws IOException {
         var to = new File("target/test/image_resized_" + System.currentTimeMillis() + ".jpg");
-        generator.generateImage(imagefile, to, false, image.getWidth() / 2, image.getHeight() / 2, "");
+        generator.generateImage(imagefile, to, true, image.getWidth() / 2, image.getHeight() / 2, "");
         nimage = ImageIO.read(to);
         assertEquals("mismatched width", image.getWidth() / 2, nimage.getWidth());
         assertEquals("mismatched height", image.getHeight() / 2, nimage.getHeight());
+    }
+
+    /**
+     * Tests resizing of generateText image
+     * @throws IOException output image couldn't be written / read / no outputfile
+     */
+    @Test
+    public void generateImageTestResizeBigger() throws IOException {
+        var to = new File("target/test/image_resized_" + System.currentTimeMillis() + ".jpg");
+        generator.generateImage(imagefile, to, true, image.getWidth() * 2, image.getHeight() * 2, "");
+        nimage = ImageIO.read(to);
+        assertEquals("mismatched width", image.getWidth() * 2, nimage.getWidth());
+        assertEquals("mismatched height", image.getHeight() * 2, nimage.getHeight());
     }
 
     /**
@@ -243,10 +256,34 @@ public class GeneratorTest {
     @Ignore("1. Not a double as Parameter"
             + "2. Killswitch at Generator.java:690 have to throw an Error 90 radians isn't a valid rotation")
     public void rotateImageTestRotateFile90() throws IOException, NullPointerException {
-        var imfile = new File("target/test/test_image" + System.currentTimeMillis() + ".zip");
+        var imfile = new File("target/test/test_image" + System.currentTimeMillis() + ".jpg");
         Files.copy(imagefile.toPath(), imfile.toPath(), StandardCopyOption.REPLACE_EXISTING);
         // redundant int cast, because deprecated Function signature
         generator.rotate(imfile, (int)(Math.PI / 2));
+        nimage = ImageIO.read(imfile);
+        assertNotNull(nimage);
+        assertNotSame(nimage, image);
+        assertEquals(image.getHeight(), nimage.getWidth());
+        assertEquals(image.getWidth(), nimage.getHeight());
+        for (int j = 0; j < image.getHeight(); j++) {
+            for (int i = 0; i < image.getWidth(); i++) {
+                assertEquals("False Image i=" + i + " j=" + j, image.getRGB(i, j),
+                nimage.getRGB(nimage.getWidth() - 1 - j, i));
+            }
+        }
+    }
+
+    /**
+     * Tests rotate 90°
+     * @throws IOException failed to copy / modify temp file
+     * @throws NullPointerException Implementation Error handling not working without Main class
+     */
+    @Test
+    public void rotateTestRotateFile90() throws IOException, NullPointerException {
+        var imfile = new File("target/test/test_image" + System.currentTimeMillis() + ".jpg");
+        Files.copy((new File(GeneratorTest.class.getResource("/WIN_20181001_16_39_08_Pro.jpg").getFile())).toPath(), imfile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        // redundant int cast, because deprecated Function signature
+        generator.rotate(imfile);
         nimage = ImageIO.read(imfile);
         assertNotNull(nimage);
         assertNotSame(nimage, image);

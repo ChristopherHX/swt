@@ -33,6 +33,10 @@ public class GeneratorTest {
      */
     @BeforeClass
     public static void setUp() throws IOException {
+        var dir = new File("target/test");
+        if (!dir.exists()) {
+            dir.mkdir();
+        }
         generator = new Generator(null, 0);
         image = ImageIO.read(new File(GeneratorTest.class.getResource("/image.jpg").getFile()));
     }
@@ -44,10 +48,6 @@ public class GeneratorTest {
     @After
     public void tearDown()  throws IOException  {
         if (nimage != null) {
-            var dir = new File("target/test");
-            if (!dir.exists()) {
-                dir.mkdir();
-            }
             ImageIO.write(nimage, "jpg", new File(String.format("target/test/image_rotated_%s.jpg", 
             new SimpleDateFormat("MM-dd_HH.mm.ss.SSS").format(new Date()))));
         }

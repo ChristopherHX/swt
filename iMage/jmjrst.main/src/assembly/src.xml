@@ -17,7 +17,7 @@
 			<includes>
 				<include>pom.xml</include>
 				<include>../../.gitignore</include>
-				<include>LICENCE</include>
+				<include>LICENSE</include>
 				<include>*.launch</include>
 			</includes>
 		</fileSet>

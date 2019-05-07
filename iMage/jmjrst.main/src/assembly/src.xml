@@ -11,13 +11,17 @@
 			<source>../../.gitignore</source>
 			<filtered>false</filtered>
 		</file>
+	 	<file>
+			<source>LICENSE</source>
+			<filtered>false</filtered>
+		</file>
 	</files>
 	<fileSets>
 		<fileSet>
 			<includes>
 				<include>pom.xml</include>
 				<include>../../.gitignore</include>
-				<include>LICENCE</include>
+				<include>LICENSE</include>
 				<include>*.launch</include>
 			</includes>
 		</fileSet>

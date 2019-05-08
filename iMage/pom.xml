@@ -5,8 +5,8 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>swt1</groupId>
-  <artifactId>edu.kit.ipd.swt1.ss2019</artifactId>
-  <version>0.0.5-SNAPSHOT</version>
+  <artifactId>iMage</artifactId>
+  <version>0.0.6-SNAPSHOT</version>
 
   <packaging>pom</packaging>
 

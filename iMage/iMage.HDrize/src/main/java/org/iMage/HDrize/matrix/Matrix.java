@@ -43,7 +43,7 @@ public final class Matrix implements IMatrix {
    * @param cols the amount of columns
    */
   public Matrix(int rows, int cols) {
-    throw new UnsupportedOperationException("TODO Implement me!");
+    storage = new double[rows][cols];
   }
 
   @Override

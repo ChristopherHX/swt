@@ -16,7 +16,14 @@ public class HDRCombine implements IHDRCombine {
 
   @Override
   public float[] calculateWeights() {
-    throw new UnsupportedOperationException("TODO Implement me!");
+    float[] ret = new float[256];
+    for (int i = 0; i < 20; i++) {
+      ret[i] = ret[255 - i] = 1 + i / 20f;
+    }
+    for (int i = 20; i < ret.length - 20; i++) {
+      ret[i] = 2;
+    }
+    return ret;
   }
 
 }

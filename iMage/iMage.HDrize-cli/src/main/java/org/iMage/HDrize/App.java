@@ -1,6 +1,11 @@
 package org.iMage.HDrize;
 
-import org.apache.commons.cli.*;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
 
 /**
  * This class parses all command line parameters and creates an HDRImage.
@@ -16,6 +21,10 @@ public final class App {
   private static final String CMD_OPTION_LAMBDA = "l";
   private static final String CMD_OPTION_SAMPLES = "s";
 
+  /**
+   * Handle commandline option and execute them
+   * @param args commandline option as String array
+   */
   public static void main(String[] args) {
     // Don't touch...
     CommandLine cmd = null;
@@ -57,7 +66,7 @@ public final class App {
     /*
      * Define command line options and arguments
      */
-    opt = new Option( //
+    opt = new Option(//
         App.CMD_OPTION_INPUT_IMAGES, "input-images", true, "path to folder with input images");
     opt.setRequired(true);
     opt.setType(String.class);

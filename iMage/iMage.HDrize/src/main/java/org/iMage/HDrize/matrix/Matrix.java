@@ -2,6 +2,9 @@ package org.iMage.HDrize.matrix;
 
 import org.iMage.HDrize.base.matrix.IMatrix;
 
+/**
+ * Matrix of double stored as array
+ */
 public final class Matrix implements IMatrix {
 
   private double[][] storage;
@@ -23,10 +26,10 @@ public final class Matrix implements IMatrix {
    *          the original matrix mtx[Rows][Cols]
    */
   public Matrix(double[][] mtx) {
-    storage = Copy(mtx);
+    storage = copy(mtx);
   }
 
-  private static double[][] Copy(double[][] mtx) {
+  private static double[][] copy(double[][] mtx) {
     double[][] ret = new double[mtx.length][mtx[0].length];
     for (int j = 0; j < ret.length; j++) {
       for (int i = 0; i < ret[0].length; i++) {
@@ -48,7 +51,7 @@ public final class Matrix implements IMatrix {
 
   @Override
   public double[][] copy() {
-    return Copy(storage);
+    return copy(storage);
   }
 
   @Override

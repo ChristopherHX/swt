@@ -2,6 +2,9 @@ package org.iMage.HDrize.matrix;
 
 import org.iMage.HDrize.base.matrix.IMatrixCalculator;
 
+/**
+ * Common Matrix Operation
+ */
 public class MatrixCalculator implements IMatrixCalculator<Matrix> {
 
   @Override
@@ -13,7 +16,7 @@ public class MatrixCalculator implements IMatrixCalculator<Matrix> {
     }
     for (int l = 0; l < mtx.cols(); l++) {
       for (int i = l; i < mtx.rows(); i++) {
-        if(gaussian[i][l] != 0) {
+        if (gaussian[i][l] != 0) {
           var divisor = gaussian[i][l];
           for (int j = 0; j < mtx.cols(); j++) {
             gaussian[i][j] /= divisor;

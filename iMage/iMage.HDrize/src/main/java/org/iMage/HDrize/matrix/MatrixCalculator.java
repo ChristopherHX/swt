@@ -55,8 +55,8 @@ public class MatrixCalculator implements IMatrixCalculator<Matrix> {
   public Matrix transpose(Matrix mtx) {
     double[][] ret = new double[mtx.cols()][mtx.rows()];
     for (int j = 0; j < ret.length; j++) {
-      for (int i = 0; i < ret[i].length; i++) {
-        ret[i][j] = mtx.get(j, i);
+      for (int i = 0; i < ret[j].length; i++) {
+        ret[j][i] = mtx.get(i, j);
       }
     }
     return new Matrix(ret);

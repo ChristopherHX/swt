@@ -74,4 +74,24 @@ public final class Matrix implements IMatrix {
     return storage[r][c];
   }
 
+  /**
+   * Comoares equality of two Matrices
+   * @param mtx matrix to compare with
+   * @param error allowed inacuracy of double
+   * @return if mtx is equal with this
+   */
+  public boolean equals(IMatrix mtx, double error) {
+    if (mtx.rows() != storage.length || mtx.cols() != storage[0].length) {
+      return false;
+    }
+    for (int j = 0; j < mtx.rows(); j++) {
+      for (int i = 0; i < mtx.cols(); i++) {
+        if (Math.abs(storage[j][i] - mtx.get(j, i)) > error) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
 }

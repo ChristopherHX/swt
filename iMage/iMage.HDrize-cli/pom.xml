@@ -5,13 +5,14 @@
 	<parent>
 		<groupId>swt1</groupId>
 		<artifactId>iMage</artifactId>
-		<version>0.0.6-SNAPSHOT</version>
+		<version>0.0.1-SNAPSHOT</version>
 	</parent>
-	<artifactId>iMage.HDrize-cli</artifactId>
+	<groupId>swt1.ub2.a5</groupId>
+	<artifactId>2221803</artifactId>
 	<dependencies>
 		<dependency>
-			<groupId>swt1</groupId>
-			<artifactId>iMage.HDrize.dummy</artifactId>
+			<groupId>swt1.ub2.a4</groupId>
+			<artifactId>2221803</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
@@ -19,4 +20,42 @@
 			<artifactId>commons-cli</artifactId>
 		</dependency>
 	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>3.1.1</version>
+				<configuration>
+					<archive>
+						<manifest>
+							<addClasspath>true</addClasspath>
+							<mainClass>org.iMage.HDrize.App</mainClass>
+						</manifest>
+					</archive>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>3.1.1</version>
+				<executions>
+					<execution>
+						<id>copy-dependencies</id>
+						<phase>package</phase>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
+						<configuration>
+						<outputDirectory>${project.build.directory}</outputDirectory>
+						<overWriteReleases>false</overWriteReleases>
+						<overWriteSnapshots>false</overWriteSnapshots>
+						<overWriteIfNewer>true</overWriteIfNewer>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
 </project>

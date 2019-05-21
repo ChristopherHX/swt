@@ -31,7 +31,19 @@ public class MatrixCalculator implements IMatrixCalculator<Matrix> {
               }
             }
           }
+          if (i > l) {
+            for (int j = 0; j < mtx.cols(); j++) {
+              var gtmp = gaussian[i][j];
+              var itmp = inverse[i][j];
+              gaussian[i][j] = gaussian[l][j];
+              inverse[i][j] = inverse[l][j];
+              gaussian[l][j] = gtmp;
+              inverse[l][j] = itmp;
+            }
+          }
           break;
+        } else if (i + 1 == mtx.rows()) {
+          throw new IllegalArgumentException("Matrix must be invertable");
         }
       }
     }

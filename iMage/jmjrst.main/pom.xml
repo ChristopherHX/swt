@@ -6,7 +6,6 @@
 
   <groupId>swt1.ub1.a3</groupId>
   <artifactId>2221803</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
 
   <name>jmjrst.main</name>
 
@@ -26,8 +25,8 @@
 
   <parent>
     <groupId>swt1</groupId>
-    <artifactId>edu.kit.ipd.swt1.ss2019</artifactId>
-    <version>0.0.5-SNAPSHOT</version>
+    <artifactId>iMage</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
   </parent>
 
   <build>

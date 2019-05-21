@@ -5,16 +5,25 @@
     <parent>
         <artifactId>iMage</artifactId>
         <groupId>swt1</groupId>
-        <version>0.0.6-SNAPSHOT</version>
+        <version>0.0.1-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>iMage.HDrize</artifactId>
+    <groupId>swt1.ub1.a4</groupId>
+    <artifactId>2221803</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <packaging>jar</packaging>
+
     <dependencies>
         <dependency>
             <groupId>swt1</groupId>
             <artifactId>iMage.HDrize.base</artifactId>
             <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>

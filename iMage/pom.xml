@@ -12,6 +12,13 @@
 
   <name>iMage</name>
 
+  <modules>
+    <module>jmjrst.main</module>
+    <module>iMage.HDrize</module>
+    <module>iMage.HDrize-cli</module>
+    <module>iMage.filter</module>
+  </modules>
+
   <parent>
     <groupId>edu.kit.ipd.swt1.ss2019</groupId>
     <artifactId>uebungsparent</artifactId>

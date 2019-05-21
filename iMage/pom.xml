@@ -20,7 +20,8 @@
 
   <repositories>
     <repository>
-      <id>ipdNexus</id>
+      <id>swt1</id>
+      <name>swt1</name>
       <url>http://bob.ipd.kit.edu/nexus/repository/maven-public-all/</url>
     </repository>
   </repositories>

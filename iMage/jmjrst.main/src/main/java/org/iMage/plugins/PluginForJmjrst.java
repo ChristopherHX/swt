@@ -4,6 +4,7 @@ package org.iMage.plugins;
  * Abstract parent class for plug-ins for JMJRST
  *
  * @author Dominik Fuchss
+ * @author Christopher Homberger
  */
 public abstract class PluginForJmjrst implements Comparable<PluginForJmjrst> {
 
@@ -42,7 +43,6 @@ public abstract class PluginForJmjrst implements Comparable<PluginForJmjrst> {
 
   @Override 
   public int compareTo(PluginForJmjrst otherPlugin) {
-    //TODO: implement me!
-    return 0;
+    return getName() - otherPlugin.getName();
   }
 }

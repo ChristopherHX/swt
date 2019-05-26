@@ -1,9 +1,15 @@
 package org.iMage.plugins;
 
+import java.util.ServiceLoader;
+import java.util.TreeSet;
+import java.util.ServiceLoader.Provider;
+import java.util.stream.Collectors;
+
 /**
  * Knows all available plug-ins and is responsible for using the service loader API to detect them.
  *
  * @author Dominik Fuchss
+ * @author Christopher Homberger
  */
 public final class PluginManagement {
 
@@ -22,8 +28,8 @@ public final class PluginManagement {
    * according to their class names.
    */
   public static Iterable<PluginForJmjrst> getPlugins() {
-    //TODO: implement me!
-    return null;
+    var sl = ServiceLoader.load(PluginForJmjrst.class);
+    return sl.stream().map(Provider::get).collect(Collectors.toCollection(TreeSet::new));
   }
 
 }

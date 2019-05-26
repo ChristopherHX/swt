@@ -23,6 +23,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.UIManager;
 
+import org.iMage.plugins.PluginManagement;
 import org.jis.Main;
 import org.jis.listner.MenuListner;
 
@@ -84,6 +85,9 @@ public class Menu extends JMenuBar {
     url = ClassLoader.getSystemResource("icons/preferences-system.png");
     set_quality.setIcon(new ImageIcon(url));
 
+    JMenu start_plugin = new JMenu("Start Plug-In");
+    JMenu configure_plugin = new JMenu("Configure Plug-In");
+
     info = new JMenuItem(m.mes.getString("Menu.7"));
     url = ClassLoader.getSystemResource("icons/help-browser.png");
     info.setIcon(new ImageIcon(url));
@@ -110,6 +114,24 @@ public class Menu extends JMenuBar {
     datei.add(exit);
     option.add(optionen_look);
     option.add(set_quality);
+    option.addSeparator();
+    for (var plugin : PluginManagement.getPlugins()) {
+      plugin.init(m);
+      var pitem = new JMenuItem(plugin.getName());
+      pitem.addActionListener(e -> {
+        plugin.run();
+      });
+      start_plugin.add(pitem);
+      if (plugin.isConfigurable()) {
+        pitem = new JMenuItem(plugin.getName());
+        pitem.addActionListener(e -> {
+          plugin.configure();
+        });
+        start_plugin.add(pitem);
+      }
+    }
+    option.add(start_plugin);
+    option.add(configure_plugin);
     option.addSeparator();
     option.add(update_check);
     about.add(info);

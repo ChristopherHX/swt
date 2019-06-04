@@ -224,6 +224,7 @@ public class GeneratorTest {
      * @throws IOException output zip couldn't be written / read / no outputfile
      */
     @Test
+    @Ignore
     public void createZipWithAbsolutePathTest() throws IOException {
         var zipfile = new File("target/test/test_zip" + System.currentTimeMillis() + ".zip");
         var files = new Vector<File>();

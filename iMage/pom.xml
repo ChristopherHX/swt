@@ -6,7 +6,7 @@
 
   <groupId>swt1</groupId>
   <artifactId>iMage</artifactId>
-  <description>Usesless Application</description>
+  <description>Useless Application</description>
 
   <packaging>pom</packaging>
 
@@ -14,6 +14,8 @@
 
   <modules>
     <module>jmjrst.main</module>
+    <module>iMage.Instagrim-plugin</module>
+    <module>iMage.Bundle</module>
     <module>iMage.HDrize</module>
     <module>iMage.HDrize-cli</module>
     <module>iMage.filter</module>

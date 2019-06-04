@@ -127,7 +127,7 @@ public class Menu extends JMenuBar {
         pitem.addActionListener(e -> {
           plugin.configure();
         });
-        start_plugin.add(pitem);
+        configure_plugin.add(pitem);
       }
     }
     option.add(start_plugin);

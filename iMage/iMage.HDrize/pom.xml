@@ -2,17 +2,18 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <parent>
-        <artifactId>iMage</artifactId>
-        <groupId>swt1</groupId>
-        <version>0.0.1-SNAPSHOT</version>
-    </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>swt1.ub2.a4</groupId>
     <artifactId>2221803</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-    <packaging>jar</packaging>
+
+    <name>iMage.HDrize</name>
+
+    <properties>
+        <project.build.sourceEncoding>utf-8</project.build.sourceEncoding>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+    </properties>
 
     <dependencies>
         <dependency>
@@ -26,4 +27,10 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <parent>
+        <groupId>swt1</groupId>
+        <artifactId>iMage</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
 </project>

@@ -19,6 +19,7 @@
     <module>iMage.HDrize</module>
     <module>iMage.HDrize-cli</module>
     <module>iMage.filter</module>
+    <module>iMage.iCatcher</module>
   </modules>
 
   <parent>

@@ -90,7 +90,7 @@ public final class App {
       
         @Override
         public boolean accept(File dir, String name) {
-          return name.endsWith(".jpg") || name.endsWith(".jpeg") || name.endsWith(".tiff");
+          return name.endsWith(".jpg") || name.endsWith(".jpeg") || name.endsWith(".jfiff");
         }
       });
       if ((files.length % 2) == 0) {

@@ -42,6 +42,7 @@
               <classpathPrefix>lib/</classpathPrefix>
               <mainClass>image.icatcher.App</mainClass>
               <classpathLayoutType>repository</classpathLayoutType>
+              <useUniqueVersions>false</useUniqueVersions>
             </manifest>
           </archive>
         </configuration>

@@ -40,7 +40,7 @@
             <manifest>
               <addClasspath>true</addClasspath>
               <classpathPrefix>lib/</classpathPrefix>
-              <mainClass>image.icatcher.App</mainClass>
+              <mainClass>org.iMage.iCatcher.App</mainClass>
               <classpathLayoutType>repository</classpathLayoutType>
               <useUniqueVersions>false</useUniqueVersions>
             </manifest>

@@ -45,7 +45,6 @@ public class MainFrame extends JFrame {
 	private JPanel panel;
 	private EnhancedImage[] images;
 	private String prefix;
-	private ImageIcon hdrIcon = new ImageIcon();
 	private BufferedImage hdrImage;
 	private double lambda;
 	private ICameraCurve[] curves = new ICameraCurve[3];
@@ -68,10 +67,7 @@ public class MainFrame extends JFrame {
 		JScrollPane pane = new JScrollPane(panel);
 		add(pane);
 
-//		JPanel hdrPanel = new JPanel();
-//		hdrPanel.setLayout(new BoxLayout(hdrPanel, BoxLayout.Y_AXIS));
 		buttonHDR = new JButton();
-		buttonHDR.setIcon(hdrIcon);
 		buttonHDR.addActionListener(e -> {
 			JFrame frame = new JFrame(prefix + "_HDR");
 			JLabel label = new JLabel();
@@ -314,7 +310,7 @@ public class MainFrame extends JFrame {
 				curve.calculate();
 			}
 			hdrImage = hdr.createRGB(images, curve, ToneMapping.values()[toneBox.getSelectedIndex()]);
-			hdrIcon.setImage(generatePreview(hdrImage));
+			buttonHDR.setIcon(new ImageIcon(generatePreview(hdrImage)));
 			controlHDR();
 		});
 		Box box = Box.createHorizontalBox();

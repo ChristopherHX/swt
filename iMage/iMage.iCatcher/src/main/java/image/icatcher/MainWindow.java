@@ -96,7 +96,7 @@ public class MainWindow extends JFrame {
         c.gridy = 0;
         c.gridheight = 2;
         c.fill = GridBagConstraints.BOTH;
-        c.weightx = 0.5;
+        // c.weightx = 0.5;
         grid.add(new JScrollPane(sourcepics), c);
         hDRPreviewbutton = new JButton();
         var image = new ImageIcon(file);
@@ -125,7 +125,7 @@ public class MainWindow extends JFrame {
         // leftJPanel.add(new JTextPane());
         c = new GridBagConstraints();
         c.gridx = 0;
-        c.gridy = 2;
+        c.gridy = 3;
         c.gridwidth = 1;
         // c.weightx = 0.5;
         c.fill = GridBagConstraints.HORIZONTAL;
@@ -135,7 +135,7 @@ public class MainWindow extends JFrame {
         curveBox.addActionListener(e -> {if (curveBox.getSelectedIndex() == 2 && curves[2] == null) loadCurve();});
         c = new GridBagConstraints();
         c.gridx = 0;
-        c.gridy = 3;
+        c.gridy = 4;
         c.gridwidth = 1;
         // c.weightx = 0.5;
         c.fill = GridBagConstraints.HORIZONTAL;
@@ -148,7 +148,7 @@ public class MainWindow extends JFrame {
         // leftJPanel.add(new JTextPane());
         c = new GridBagConstraints();
         c.gridx = 0;
-        c.gridy = 4;
+        c.gridy = 5;
         c.gridwidth = 1;
         // c.weightx = 0.5;
         c.fill = GridBagConstraints.HORIZONTAL;
@@ -159,7 +159,7 @@ public class MainWindow extends JFrame {
         //leftJPanel.add(Box.createVerticalGlue());
         c = new GridBagConstraints();
         c.gridx = 0;
-        c.gridy = 5;
+        c.gridy = 6;
         c.gridwidth = 1;
         // c.weightx = 0.5;
         c.fill = GridBagConstraints.HORIZONTAL;
@@ -167,7 +167,7 @@ public class MainWindow extends JFrame {
         // c = new GridBagConstraints();
         // c.fill = GridBagConstraints.HORIZONTAL;
         // c.gridx = 0;
-        // c.gridy = 2;
+        // c.gridy = 3;
         // c.weighty = 1;
         // c.weightx = 0.5;
         //grid.add(leftJPanel, c);
@@ -237,9 +237,9 @@ public class MainWindow extends JFrame {
         c = new GridBagConstraints();
         c.fill = GridBagConstraints.HORIZONTAL;
         c.gridx = 1;
-        c.gridy = 5;
+        c.gridy = 6;
         c.gridwidth = 2;
-        // c.weightx = 0.5;
+        // c.weightx = 1.0 / 6;
         grid.add(loadDir, c);
         //rightJPanel.add(loadDir);
 
@@ -277,7 +277,7 @@ public class MainWindow extends JFrame {
         c.gridx = 5;
         c.gridy = 1;
         c.gridwidth = 2;
-        // c.weightx = 0.5;
+        // c.weightx = 1.0 / 6;
         grid.add(saveHDR, c);
         // rightJPanel.add(saveHDR);
 
@@ -305,9 +305,9 @@ public class MainWindow extends JFrame {
         c = new GridBagConstraints();
         c.fill = GridBagConstraints.HORIZONTAL;
         c.gridx = 5;
-        c.gridy = 5;
+        c.gridy = 6;
         c.gridwidth = 2;
-        // c.weightx = 0.5;
+        // c.weightx = 1.0 / 6;
         grid.add(runHDR, c);
         
         //rightJPanel.add(runHDR);
@@ -347,17 +347,17 @@ public class MainWindow extends JFrame {
         c.gridx = 3;
         c.gridy = 1;
         c.gridwidth = 2;
-        // c.weightx = 0.5;
+        // c.weightx = 1.0 / 6;
         grid.add(saveCurve, c);
 
         //rightJPanel.add(saveCurve);
 
-        JButton loadCurve = new JButton("RUN loadCurve");
+        JButton loadCurve = new JButton("loadCurve");
 		loadCurve.addActionListener(e -> loadCurve());
         c = new GridBagConstraints();
         c.fill = GridBagConstraints.HORIZONTAL;
         c.gridx = 3;
-        c.gridy = 5;
+        c.gridy = 6;
         c.gridwidth = 2;
         // c.weightx = 0.5;
         grid.add(loadCurve, c);
@@ -376,41 +376,53 @@ public class MainWindow extends JFrame {
         c.gridx = 1;
         c.gridy = 1;
         c.gridwidth = 2;
-        // c.weightx = 0.5;
+        // c.weightx = 1.0 / 6;
         grid.add(showCurve, c);
 
         c = new GridBagConstraints();
         c.fill = GridBagConstraints.HORIZONTAL;
         c.gridx = 4;
-        c.gridy = 3;
+        c.gridy = 4;
         c.gridwidth = 3;
-        // c.weightx = 0.5;
+        // c.weightx = 0.25;
         grid.add(new TextField(), c);
 
         // rightJPanel.add(showCurve);
         c = new GridBagConstraints();
         c.gridx = 1;
-        c.gridy = 3;
+        c.gridy = 4;
         c.gridwidth = 3;
         c.fill = GridBagConstraints.HORIZONTAL;
-        // c.weightx = 0.5;
+        // c.weightx = 0.25;
         grid.add(samplesslider, c);
 
         c = new GridBagConstraints();
         c.gridx = 1;
-        c.gridy = 2;
+        c.gridy = 3;
         c.gridwidth = 3;
         c.fill = GridBagConstraints.HORIZONTAL;
-        // c.weightx = 0.5;
+        // c.weightx = 0.25;
         grid.add(new JLabel("Samples"), c);
 
         c = new GridBagConstraints();
         c.gridx = 4;
-        c.gridy = 2;
+        c.gridy = 3;
         c.gridwidth = 3;
         c.fill = GridBagConstraints.HORIZONTAL;
-        // c.weightx = 0.5;
+        // c.weightx = 0.25;
         grid.add(new JLabel("Lambda"), c);
+
+
+        for (int i = 0; i < 7; i++) {
+            c = new GridBagConstraints();
+            c.gridx = i;
+            c.gridy = 2;
+            c.gridwidth = 1;
+            c.fill = GridBagConstraints.HORIZONTAL;
+            c.weightx = i > 0 ? 1.0 / 256 : 1;
+            c.weighty = 0.2;
+            grid.add(new JLabel(), c);
+        }
 
         //grid.add(rightJPanel, c);
         pack();

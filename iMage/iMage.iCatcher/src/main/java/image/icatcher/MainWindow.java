@@ -57,7 +57,6 @@ public class MainWindow extends JFrame {
     private JButton saveCurve;
     private JButton showCurve;
     private JButton HDRPreviewbutton;
-
     private static String minPrefix(File[] strings, int min) {
         if (strings.length == 0 || strings[0].getName().length() <= min) {
             return null;
@@ -75,7 +74,7 @@ public class MainWindow extends JFrame {
 
     public MainWindow() throws URISyntaxException {
         (curves[0] = new CameraCurve()).calculate();
-        var file = getClass().getClassLoader().getResource("2019-06-05-200418.jpg");
+        var file = getClass().getClassLoader().getResource("default.png");
         var layout = new GridLayout(2, 2);
         // var layout = new BoxLayout(this, SwingConstants.HORIZONTAL);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -95,11 +94,10 @@ public class MainWindow extends JFrame {
 
         // sourcepics.add(new ScaledImageLabel(file, false));
         // sourcepics.add(new ScaledImageLabel(file, false));
-        var sc = new ScaledImageLabel(file, true);
         HDRPreviewbutton = new JButton();
         var image = new ImageIcon(file);
-        // image.setImage(image.getImage().getScaledInstance(350, 250, 0));
-        // HDRPreviewbutton.setIcon(image);
+        image.setImage(image.getImage().getScaledInstance(350, 250, 0));
+        HDRPreviewbutton.setIcon(image);
         HDRPreviewbutton.addActionListener(e -> {
             JDialog frame = new JDialog(this);
             frame.setAlwaysOnTop(true);
@@ -122,6 +120,7 @@ public class MainWindow extends JFrame {
         // leftJPanel.add(new JTextPane());
         leftJPanel.add(textpane, Component.LEFT_ALIGNMENT);
         curveBox = new JComboBox<>(new String[] { "Standard Curve", "Calculated Curve", "Loaded Curve" });
+        curveBox.addActionListener(e -> {if (curveBox.getSelectedIndex() == 2 && curves[2] == null) loadCurve();});
         leftJPanel.add(curveBox);
         leftJPanel.add(Box.createVerticalGlue());
         leftJPanel.add(Box.createVerticalGlue());
@@ -145,7 +144,7 @@ public class MainWindow extends JFrame {
 
         });
 
-        Hashtable labeltable = new Hashtable();
+        Hashtable<Integer, JLabel> labeltable = new Hashtable<>();
         labeltable.put(1, new JLabel("1"));
         labeltable.put(1000, new JLabel("1000"));
         samplesslider.setLabelTable(labeltable);
@@ -178,7 +177,9 @@ public class MainWindow extends JFrame {
                     }
                 });
                 if (files.length % 2 == 0 && files.length >= 3) {
-                    // controlHDR();
+                    // JOptionPane.showMessageDialog(null, "");
+                    changed();
+                    return;
                 }
                 prefix = minPrefix(files, 3);
                 images = new EnhancedImage[files.length];
@@ -235,9 +236,18 @@ public class MainWindow extends JFrame {
         runHDR = new JButton("RUN HDrize");
 		runHDR.addActionListener(e -> {
             ICameraCurve curve = curves[curveBox.getSelectedIndex()];
-            if(curve == null && curveBox.getSelectedIndex() == 1) {
-                curve = curves[1] = new CameraCurve(images, samplesslider.getValue(), 20, new MatrixCalculator());
-                curve.calculate();
+            if(curve == null) {
+                switch (curveBox.getSelectedIndex()) {
+                    case 1:
+                        curve = curves[1] = new CameraCurve(images, samplesslider.getValue(), 20, new MatrixCalculator());                       
+                    curve.calculate();
+                    break;
+                    case 2:
+                    loadCurve();
+                    default:
+                        break;
+                }
+
             }
 			hdrImage = hdr.createRGB(images, curve, ToneMapping.values()[tonebox.getSelectedIndex()]);
             image.setImage(generatePreview(hdrImage));
@@ -248,7 +258,7 @@ public class MainWindow extends JFrame {
 
         saveCurve = new JButton("RUN saveCurve");
 		saveCurve.addActionListener(e -> {
-            if(curves[1] == null/*  && curveBox.getSelectedIndex() == 1 Diogo to patch */) {
+            if(curves[1] == null) {
                 curves[1] = new CameraCurve(images, samplesslider.getValue(), 20, new MatrixCalculator());
                 curves[1].calculate();
             }
@@ -279,32 +289,7 @@ public class MainWindow extends JFrame {
         rightJPanel.add(saveCurve);
 
         JButton loadCurve = new JButton("RUN loadCurve");
-		loadCurve.addActionListener(e -> {
-            JFileChooser chooser = new JFileChooser();
-            chooser.setDialogTitle("Load Curve");
-            chooser.setAcceptAllFileFilterUsed(false);
-            chooser.setFileFilter(new FileFilter() {
-                @Override
-                public String getDescription() {
-                    return "Curve (.bin)";
-                }
-
-                @Override
-                public boolean accept(File f) {
-                    return f.getName().endsWith(".bin");
-                }
-            });
-            if(chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
-                try {
-                    curves[2] = new CameraCurve(new FileInputStream(chooser.getSelectedFile()));
-                } catch (ClassNotFoundException r) {
-                    //TODO: handle exception
-                } catch (IOException r) {
-                //TODO: handle exception
-            }
-            }
-            changed();
-        });
+		loadCurve.addActionListener(e -> loadCurve());
         
         rightJPanel.add(loadCurve);
 
@@ -324,6 +309,34 @@ public class MainWindow extends JFrame {
         // scrollpane.getHeight());
         changed();
         setVisible(true);
+    }
+
+    private void loadCurve() {
+        JFileChooser chooser = new JFileChooser();
+        chooser.setDialogTitle("Load Curve");
+        chooser.setAcceptAllFileFilterUsed(false);
+        chooser.setFileFilter(new FileFilter() {
+            @Override
+            public String getDescription() {
+                return "Curve (.bin)";
+            }
+
+            @Override
+            public boolean accept(File f) {
+                return f.getName().endsWith(".bin");
+            }
+        });
+        if(chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+            try {
+                curves[2] = new CameraCurve(new FileInputStream(chooser.getSelectedFile()));
+                curveBox.setSelectedIndex(2);
+            } catch (ClassNotFoundException r) {
+                //TODO: handle exception
+            } catch (IOException r) {
+            //TODO: handle exception
+        }
+        }
+        changed();
     }
 
     private BufferedImage drawCurve() {

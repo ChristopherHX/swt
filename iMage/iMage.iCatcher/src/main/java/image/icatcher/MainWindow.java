@@ -1,9 +1,12 @@
 package image.icatcher;
 
+import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
@@ -56,7 +59,8 @@ public class MainWindow extends JFrame {
     private JButton saveHDR;
     private JButton saveCurve;
     private JButton showCurve;
-    private JButton HDRPreviewbutton;
+    private JButton hDRPreviewbutton;
+    private JPanel grid;
     private static String minPrefix(File[] strings, int min) {
         if (strings.length == 0 || strings[0].getName().length() <= min) {
             return null;
@@ -75,45 +79,43 @@ public class MainWindow extends JFrame {
     public MainWindow() throws URISyntaxException {
         (curves[0] = new CameraCurve()).calculate();
         var file = getClass().getClassLoader().getResource("default.png");
-        var layout = new GridLayout(2, 2);
-        // var layout = new BoxLayout(this, SwingConstants.HORIZONTAL);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setTitle("iMage.iCatcher");
+        // Unset for real Responsiveness
         setResizable(false);
         setSize(800, 700);
         setPreferredSize(new Dimension(800, 700));
-        setLayout(layout);
+        // RealGridlayout
+        setLayout(new BorderLayout());
+        grid = new JPanel(new GridBagLayout());
+        add(grid);
         sourcepics = new JPanel(new FlowLayout());
-        var scrollpane = new JScrollPane(sourcepics);
-        add(scrollpane);
-        // for (int i = 0; i < 3; i++) {
-        //     var pic = new ScaledImageLabel(file, false);
-        //     pic.setPreferredSize(new Dimension(350, 250));
-        //     sourcepics.add(pic);
-        // }
-
-        // sourcepics.add(new ScaledImageLabel(file, false));
-        // sourcepics.add(new ScaledImageLabel(file, false));
-        HDRPreviewbutton = new JButton();
+        var c = new GridBagConstraints();
+        c.gridx = 0;
+        c.gridy = 0;
+        c.gridheight = 2;
+        c.fill = GridBagConstraints.BOTH;
+        c.weightx = 0.5;
+        grid.add(new JScrollPane(sourcepics), c);
+        hDRPreviewbutton = new JButton();
         var image = new ImageIcon(file);
-        image.setImage(image.getImage().getScaledInstance(350, 250, 0));
-        HDRPreviewbutton.setIcon(image);
-        HDRPreviewbutton.addActionListener(e -> {
-            JDialog frame = new JDialog(this);
-            frame.setAlwaysOnTop(true);
-            frame.setTitle(prefix + "_HDR");
+        hDRPreviewbutton.setIcon(image);
+        hDRPreviewbutton.addActionListener(e -> {
+            JDialog frame = new JDialog(this, prefix + "_HDR", Dialog.ModalityType.DOCUMENT_MODAL);
+            frame.setResizable(false);
             frame.add(new JScrollPane(new JLabel(new ImageIcon(hdrImage))));
             frame.setVisible(true);
             frame.pack();
         });
-        add(HDRPreviewbutton);
+        c = new GridBagConstraints();
+        c.gridx = 1;
+        c.gridy = 0;
+        c.fill = GridBagConstraints.NONE;
+        grid.add(hDRPreviewbutton);
 
-        // JPanel leftJPanel = new JPanel();
-        // leftJPanel.setLayout(new BoxLayout(leftJPanel, BoxLayout.Y_AXIS));
         Box leftJPanel = Box.createVerticalBox();
         leftJPanel.add(Box.createVerticalGlue());
-        leftJPanel.add(Box.createVerticalGlue());
-        leftJPanel.add(Box.createVerticalGlue());
+
         var textpane = new JLabel("Camera Curve", SwingConstants.LEFT);// new JTextPane();
         // textpane.setHorizontalAlignment(SwingConstants.LEFT);
         // textpane.setText("Camera Curve");
@@ -123,20 +125,21 @@ public class MainWindow extends JFrame {
         curveBox.addActionListener(e -> {if (curveBox.getSelectedIndex() == 2 && curves[2] == null) loadCurve();});
         leftJPanel.add(curveBox);
         leftJPanel.add(Box.createVerticalGlue());
-        leftJPanel.add(Box.createVerticalGlue());
-        leftJPanel.add(Box.createVerticalGlue());
-        var tonepane = new JLabel("Tone Mapping", SwingConstants.LEFT);
+        var tonepane = new JLabel("Tone Mapping", SwingConstants.LEADING);
         // var tonepane = new JTextPane();
         // tonepane.setText("Tone Mapping");
         // leftJPanel.add(new JTextPane());
         leftJPanel.add(tonepane, Component.LEFT_ALIGNMENT);
         var tonebox = new JComboBox<>(new String[] { "Simple Map", "Standard Gamma", "SRGB Gamma" });
-        // add(curveBox);
         leftJPanel.add(tonebox);
         leftJPanel.add(Box.createVerticalGlue());
-        leftJPanel.add(Box.createVerticalGlue());
-        leftJPanel.add(Box.createVerticalGlue());
-        add(leftJPanel);
+        c = new GridBagConstraints();
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.gridx = 0;
+        c.gridy = 2;
+        c.weighty = 1;
+        c.weightx = 0.5;
+        grid.add(leftJPanel, c);
         JPanel rightJPanel = new JPanel();
 
         samplesslider = new JSlider(SwingConstants.HORIZONTAL, 1, 1000, 500);
@@ -296,13 +299,23 @@ public class MainWindow extends JFrame {
         showCurve = new JButton("showCurve");
 		showCurve.addActionListener(e -> {
             JDialog frame = new JDialog(this, String.format(Locale.ENGLISH, "Calculated Curve (%ds,%.1fl)", samplesslider.getValue(), 20.0), Dialog.ModalityType.DOCUMENT_MODAL);
+            frame.setResizable(false);
             frame.add(new CurvePanel(curves[curveBox.getSelectedIndex()])/* new JLabel(new ImageIcon(drawCurve()) )*/);
             frame.pack();
             frame.setVisible(true);
         });
-        
-        rightJPanel.add(showCurve);
-        add(rightJPanel);
+        c = new GridBagConstraints();
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.gridx = 1;
+        c.gridy = 1;
+        // c.weightx = 0.5;
+        grid.add(showCurve, c);
+        // rightJPanel.add(showCurve);
+        c = new GridBagConstraints();
+        c.gridx = 1;
+        c.gridy = 2;
+        // c.weightx = 0.5;
+        grid.add(rightJPanel, c);
         pack();
         // sourcepics.setSize((int)(sourcepics.getWidth() *
         // ((double)sourcepics.getHeight() / scrollpane.getHeight())),
@@ -363,7 +376,7 @@ public class MainWindow extends JFrame {
     private void changed() {
         runHDR.setEnabled(images != null);
         saveHDR.setEnabled(hdrImage != null);
-        HDRPreviewbutton.setEnabled(hdrImage != null);
+        hDRPreviewbutton.setEnabled(hdrImage != null);
         saveCurve.setEnabled(curves[1] != null);
         showCurve.setEnabled(curves[1] != null);
     }

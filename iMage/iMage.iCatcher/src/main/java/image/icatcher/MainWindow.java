@@ -9,6 +9,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Image;
+import java.awt.TextField;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
@@ -102,45 +103,75 @@ public class MainWindow extends JFrame {
         hDRPreviewbutton.setIcon(image);
         hDRPreviewbutton.addActionListener(e -> {
             JDialog frame = new JDialog(this, prefix + "_HDR", Dialog.ModalityType.DOCUMENT_MODAL);
-            frame.setResizable(false);
             frame.add(new JScrollPane(new JLabel(new ImageIcon(hdrImage))));
-            frame.setVisible(true);
             frame.pack();
+            frame.setResizable(false);
+            frame.setVisible(true);
         });
         c = new GridBagConstraints();
         c.gridx = 1;
         c.gridy = 0;
-        c.fill = GridBagConstraints.NONE;
-        grid.add(hDRPreviewbutton);
+        c.gridwidth = 6;
+        // c.weightx = 0.5;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        grid.add(hDRPreviewbutton, c);
 
-        Box leftJPanel = Box.createVerticalBox();
-        leftJPanel.add(Box.createVerticalGlue());
+        //Box leftJPanel = Box.createVerticalBox();
+        //leftJPanel.add(Box.createVerticalGlue());
 
         var textpane = new JLabel("Camera Curve", SwingConstants.LEFT);// new JTextPane();
         // textpane.setHorizontalAlignment(SwingConstants.LEFT);
         // textpane.setText("Camera Curve");
         // leftJPanel.add(new JTextPane());
-        leftJPanel.add(textpane, Component.LEFT_ALIGNMENT);
+        c = new GridBagConstraints();
+        c.gridx = 0;
+        c.gridy = 2;
+        c.gridwidth = 1;
+        // c.weightx = 0.5;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        grid.add(textpane, c);
+        //leftJPanel.add(textpane, Component.LEFT_ALIGNMENT);
         curveBox = new JComboBox<>(new String[] { "Standard Curve", "Calculated Curve", "Loaded Curve" });
         curveBox.addActionListener(e -> {if (curveBox.getSelectedIndex() == 2 && curves[2] == null) loadCurve();});
-        leftJPanel.add(curveBox);
-        leftJPanel.add(Box.createVerticalGlue());
+        c = new GridBagConstraints();
+        c.gridx = 0;
+        c.gridy = 3;
+        c.gridwidth = 1;
+        // c.weightx = 0.5;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        grid.add(curveBox, c);
+        //leftJPanel.add(curveBox);
+        //leftJPanel.add(Box.createVerticalGlue());
         var tonepane = new JLabel("Tone Mapping", SwingConstants.LEADING);
         // var tonepane = new JTextPane();
         // tonepane.setText("Tone Mapping");
         // leftJPanel.add(new JTextPane());
-        leftJPanel.add(tonepane, Component.LEFT_ALIGNMENT);
-        var tonebox = new JComboBox<>(new String[] { "Simple Map", "Standard Gamma", "SRGB Gamma" });
-        leftJPanel.add(tonebox);
-        leftJPanel.add(Box.createVerticalGlue());
         c = new GridBagConstraints();
-        c.fill = GridBagConstraints.HORIZONTAL;
         c.gridx = 0;
-        c.gridy = 2;
-        c.weighty = 1;
-        c.weightx = 0.5;
-        grid.add(leftJPanel, c);
-        JPanel rightJPanel = new JPanel();
+        c.gridy = 4;
+        c.gridwidth = 1;
+        // c.weightx = 0.5;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        grid.add(tonepane, c);
+        //leftJPanel.add(tonepane, Component.LEFT_ALIGNMENT);
+        var tonebox = new JComboBox<>(new String[] { "Simple Map", "Standard Gamma", "SRGB Gamma" });
+        //leftJPanel.add(tonebox);
+        //leftJPanel.add(Box.createVerticalGlue());
+        c = new GridBagConstraints();
+        c.gridx = 0;
+        c.gridy = 5;
+        c.gridwidth = 1;
+        // c.weightx = 0.5;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        grid.add(tonebox, c);
+        // c = new GridBagConstraints();
+        // c.fill = GridBagConstraints.HORIZONTAL;
+        // c.gridx = 0;
+        // c.gridy = 2;
+        // c.weighty = 1;
+        // c.weightx = 0.5;
+        //grid.add(leftJPanel, c);
+        //JPanel rightJPanel = new JPanel();
 
         samplesslider = new JSlider(SwingConstants.HORIZONTAL, 1, 1000, 500);
         samplesslider.addChangeListener(e -> {
@@ -152,8 +183,8 @@ public class MainWindow extends JFrame {
         labeltable.put(1000, new JLabel("1000"));
         samplesslider.setLabelTable(labeltable);
         samplesslider.setPaintLabels(true);
-        rightJPanel.add(samplesslider);
-        rightJPanel.setLayout(new BoxLayout(rightJPanel, BoxLayout.Y_AXIS));
+        //rightJPanel.add(samplesslider);
+        //rightJPanel.setLayout(new BoxLayout(rightJPanel, BoxLayout.Y_AXIS));
 
         JButton loadDir = new JButton("LOAD DIR");
         loadDir.addActionListener(e -> {
@@ -203,7 +234,14 @@ public class MainWindow extends JFrame {
             }
             changed();
         });
-        rightJPanel.add(loadDir);
+        c = new GridBagConstraints();
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.gridx = 1;
+        c.gridy = 5;
+        c.gridwidth = 2;
+        // c.weightx = 0.5;
+        grid.add(loadDir, c);
+        //rightJPanel.add(loadDir);
 
         saveHDR = new JButton("Save HDR");
         saveHDR.addActionListener(e -> {
@@ -234,7 +272,14 @@ public class MainWindow extends JFrame {
                 }
             }
         });
-        rightJPanel.add(saveHDR);
+        c = new GridBagConstraints();
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.gridx = 5;
+        c.gridy = 1;
+        c.gridwidth = 2;
+        // c.weightx = 0.5;
+        grid.add(saveHDR, c);
+        // rightJPanel.add(saveHDR);
 
         runHDR = new JButton("RUN HDrize");
 		runHDR.addActionListener(e -> {
@@ -256,10 +301,18 @@ public class MainWindow extends JFrame {
             image.setImage(generatePreview(hdrImage));
             changed();            
         });
-        
-        rightJPanel.add(runHDR);
 
-        saveCurve = new JButton("RUN saveCurve");
+        c = new GridBagConstraints();
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.gridx = 5;
+        c.gridy = 5;
+        c.gridwidth = 2;
+        // c.weightx = 0.5;
+        grid.add(runHDR, c);
+        
+        //rightJPanel.add(runHDR);
+
+        saveCurve = new JButton("saveCurve");
 		saveCurve.addActionListener(e -> {
             if(curves[1] == null) {
                 curves[1] = new CameraCurve(images, samplesslider.getValue(), 20, new MatrixCalculator());
@@ -289,18 +342,32 @@ public class MainWindow extends JFrame {
             }
         });
 
-        rightJPanel.add(saveCurve);
+        c = new GridBagConstraints();
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.gridx = 3;
+        c.gridy = 1;
+        c.gridwidth = 2;
+        // c.weightx = 0.5;
+        grid.add(saveCurve, c);
+
+        //rightJPanel.add(saveCurve);
 
         JButton loadCurve = new JButton("RUN loadCurve");
 		loadCurve.addActionListener(e -> loadCurve());
-        
-        rightJPanel.add(loadCurve);
+        c = new GridBagConstraints();
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.gridx = 3;
+        c.gridy = 5;
+        c.gridwidth = 2;
+        // c.weightx = 0.5;
+        grid.add(loadCurve, c);
+        //rightJPanel.add(loadCurve);
 
         showCurve = new JButton("showCurve");
 		showCurve.addActionListener(e -> {
             JDialog frame = new JDialog(this, String.format(Locale.ENGLISH, "Calculated Curve (%ds,%.1fl)", samplesslider.getValue(), 20.0), Dialog.ModalityType.DOCUMENT_MODAL);
             frame.setResizable(false);
-            frame.add(new CurvePanel(curves[curveBox.getSelectedIndex()])/* new JLabel(new ImageIcon(drawCurve()) )*/);
+            frame.add(new CurvePanel(curves[1]));
             frame.pack();
             frame.setVisible(true);
         });
@@ -308,14 +375,44 @@ public class MainWindow extends JFrame {
         c.fill = GridBagConstraints.HORIZONTAL;
         c.gridx = 1;
         c.gridy = 1;
+        c.gridwidth = 2;
         // c.weightx = 0.5;
         grid.add(showCurve, c);
+
+        c = new GridBagConstraints();
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.gridx = 4;
+        c.gridy = 3;
+        c.gridwidth = 3;
+        // c.weightx = 0.5;
+        grid.add(new TextField(), c);
+
         // rightJPanel.add(showCurve);
         c = new GridBagConstraints();
         c.gridx = 1;
-        c.gridy = 2;
+        c.gridy = 3;
+        c.gridwidth = 3;
+        c.fill = GridBagConstraints.HORIZONTAL;
         // c.weightx = 0.5;
-        grid.add(rightJPanel, c);
+        grid.add(samplesslider, c);
+
+        c = new GridBagConstraints();
+        c.gridx = 1;
+        c.gridy = 2;
+        c.gridwidth = 3;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        // c.weightx = 0.5;
+        grid.add(new JLabel("Samples"), c);
+
+        c = new GridBagConstraints();
+        c.gridx = 4;
+        c.gridy = 2;
+        c.gridwidth = 3;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        // c.weightx = 0.5;
+        grid.add(new JLabel("Lambda"), c);
+
+        //grid.add(rightJPanel, c);
         pack();
         // sourcepics.setSize((int)(sourcepics.getWidth() *
         // ((double)sourcepics.getHeight() / scrollpane.getHeight())),

@@ -105,8 +105,8 @@ public class MainWindow extends JFrame {
             JDialog frame = new JDialog(this, prefix + "_HDR", Dialog.ModalityType.DOCUMENT_MODAL);
             frame.add(new JScrollPane(new JLabel(new ImageIcon(hdrImage))));
             frame.pack();
-            frame.setResizable(false);
             frame.setVisible(true);
+            frame.setResizable(false);
         });
         c = new GridBagConstraints();
         c.gridx = 1;
@@ -148,7 +148,7 @@ public class MainWindow extends JFrame {
         // leftJPanel.add(new JTextPane());
         c = new GridBagConstraints();
         c.gridx = 0;
-        c.gridy = 5;
+        c.gridy = 6;
         c.gridwidth = 1;
         // c.weightx = 0.5;
         c.fill = GridBagConstraints.HORIZONTAL;
@@ -159,7 +159,7 @@ public class MainWindow extends JFrame {
         //leftJPanel.add(Box.createVerticalGlue());
         c = new GridBagConstraints();
         c.gridx = 0;
-        c.gridy = 6;
+        c.gridy = 7;
         c.gridwidth = 1;
         // c.weightx = 0.5;
         c.fill = GridBagConstraints.HORIZONTAL;
@@ -237,7 +237,7 @@ public class MainWindow extends JFrame {
         c = new GridBagConstraints();
         c.fill = GridBagConstraints.HORIZONTAL;
         c.gridx = 1;
-        c.gridy = 6;
+        c.gridy = 7;
         c.gridwidth = 2;
         // c.weightx = 1.0 / 6;
         grid.add(loadDir, c);
@@ -305,7 +305,7 @@ public class MainWindow extends JFrame {
         c = new GridBagConstraints();
         c.fill = GridBagConstraints.HORIZONTAL;
         c.gridx = 5;
-        c.gridy = 6;
+        c.gridy = 7;
         c.gridwidth = 2;
         // c.weightx = 1.0 / 6;
         grid.add(runHDR, c);
@@ -357,7 +357,7 @@ public class MainWindow extends JFrame {
         c = new GridBagConstraints();
         c.fill = GridBagConstraints.HORIZONTAL;
         c.gridx = 3;
-        c.gridy = 6;
+        c.gridy = 7;
         c.gridwidth = 2;
         // c.weightx = 0.5;
         grid.add(loadCurve, c);
@@ -423,6 +423,22 @@ public class MainWindow extends JFrame {
             c.weighty = 0.2;
             grid.add(new JLabel(), c);
         }
+
+        c = new GridBagConstraints();
+        c.gridx = 0;
+        c.gridy = 5;
+        c.gridwidth = 7;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.weighty = 0.2;
+        grid.add(new JLabel(), c);
+
+        c = new GridBagConstraints();
+        c.gridx = 0;
+        c.gridy = 8;
+        c.gridwidth = 7;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.weighty = 0.2;
+        grid.add(new JLabel(), c);
 
         //grid.add(rightJPanel, c);
         pack();

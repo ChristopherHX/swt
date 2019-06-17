@@ -207,7 +207,7 @@ public class MainWindow extends JFrame {
                 File[] files = chooser.getSelectedFile().listFiles(new FilenameFilter() {
                     @Override
                     public boolean accept(File dir, String name) {
-                        return name.endsWith(".jpg") || name.endsWith(".jpeg") || name.endsWith(".jfiff");
+                        return name.endsWith(".jpg") || name.endsWith(".jpeg") || name.endsWith(".jpe") || name.endsWith(".jfif");
                     }
                 });
                 if (files.length % 2 == 0 && files.length >= 3) {

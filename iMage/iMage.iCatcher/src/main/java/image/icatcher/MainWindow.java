@@ -72,30 +72,30 @@ public class MainWindow extends JFrame {
     private JLabel samplesl;
 
     private class LambdaChangedListener implements DocumentListener {
-            private void textchanged() {
-                try {
-                    lambda = Double.parseDouble(textfield.getText());
-                    textfield.setForeground(lambda < 1 || lambda > 100 ? Color.RED : Color.BLACK);
-                } catch (NumberFormatException format) {
-                    textfield.setForeground(Color.RED);
-                }
-                changed();
+        private void textchanged() {
+            try {
+                lambda = Double.parseDouble(textfield.getText());
+                textfield.setForeground(lambda < 1 || lambda > 100 ? Color.RED : Color.BLACK);
+            } catch (NumberFormatException format) {
+                textfield.setForeground(Color.RED);
             }
+            changed();
+        }
 
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-                textchanged();
-            }
+        @Override
+        public void removeUpdate(DocumentEvent e) {
+            textchanged();
+        }
 
-            @Override
-            public void insertUpdate(DocumentEvent e) {
-                textchanged();
-            }
+        @Override
+        public void insertUpdate(DocumentEvent e) {
+            textchanged();
+        }
 
-            @Override
-            public void changedUpdate(DocumentEvent e) {
-                textchanged();
-            }
+        @Override
+        public void changedUpdate(DocumentEvent e) {
+            textchanged();
+        }
     }
 
     private static String minPrefix(File[] strings, int min) {
@@ -130,8 +130,61 @@ public class MainWindow extends JFrame {
         setLayout(new BorderLayout());
         grid = new JPanel(new GridBagLayout()); // RealGridlayout
         add(grid);
+        var tpanel = new JPanel();
+        tpanel.setPreferredSize(new Dimension(800, 10));
+        add(tpanel, BorderLayout.PAGE_START);
+        var lpanel = new JPanel();
+        lpanel.setPreferredSize(new Dimension(10, 700));
+        add(lpanel, BorderLayout.LINE_START);
+        var rpanel = new JPanel();
+        rpanel.setPreferredSize(new Dimension(10, 700));
+        add(rpanel, BorderLayout.LINE_END);
         createImageContainer();
         createDropdowns();
+        createButtons();
+        textfield = new JTextField("20.0");
+        var lambdachange = new LambdaChangedListener();
+        textfield.getDocument().addDocumentListener(lambdachange);
+        var c = new GridBagConstraints();
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.gridx = 4;
+        c.gridy = 4;
+        c.gridwidth = 3;
+        grid.add(textfield, c);
+        c = new GridBagConstraints();
+        c.gridx = 1;
+        c.gridy = 3;
+        c.gridwidth = 3;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        samplesl = new JLabel();
+        grid.add(samplesl, c);
+        samplesslider = new JSlider(SwingConstants.HORIZONTAL, 1, 1000, 500);
+        samplesslider.addChangeListener(e -> samplesliderchanged());
+        Hashtable<Integer, JLabel> labeltable = new Hashtable<>();
+        labeltable.put(1, new JLabel("1"));
+        labeltable.put(1000, new JLabel("1000"));
+        samplesslider.setLabelTable(labeltable);
+        samplesslider.setPaintLabels(true);
+        c = new GridBagConstraints();
+        c.gridx = 1;
+        c.gridy = 4;
+        c.gridwidth = 3;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        grid.add(samplesslider, c);
+        c = new GridBagConstraints();
+        c.gridx = 4;
+        c.gridy = 3;
+        c.gridwidth = 3;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        grid.add(new JLabel("Lambda"), c);
+        createWhiteSpace();
+        pack();
+        samplesliderchanged();
+        lambdachange.changedUpdate(null);
+        setVisible(true);
+    }
+
+    private void createButtons() {
         JButton loadDir = new JButton("LOAD DIR");
         loadDir.addActionListener(e -> loadSourceImages());
         var c = new GridBagConstraints();
@@ -180,46 +233,6 @@ public class MainWindow extends JFrame {
         c.gridy = 1;
         c.gridwidth = 2;
         grid.add(showCurve, c);
-        textfield = new JTextField("20.0");
-        var lambdachange = new LambdaChangedListener();
-        textfield.getDocument().addDocumentListener(lambdachange);
-        c = new GridBagConstraints();
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.gridx = 4;
-        c.gridy = 4;
-        c.gridwidth = 3;
-        grid.add(textfield, c);
-        c = new GridBagConstraints();
-        c.gridx = 1;
-        c.gridy = 3;
-        c.gridwidth = 3;
-        c.fill = GridBagConstraints.HORIZONTAL;
-        samplesl = new JLabel();
-        grid.add(samplesl, c);
-        samplesslider = new JSlider(SwingConstants.HORIZONTAL, 1, 1000, 500);
-        samplesslider.addChangeListener(e -> samplesliderchanged());
-        Hashtable<Integer, JLabel> labeltable = new Hashtable<>();
-        labeltable.put(1, new JLabel("1"));
-        labeltable.put(1000, new JLabel("1000"));
-        samplesslider.setLabelTable(labeltable);
-        samplesslider.setPaintLabels(true);
-        c = new GridBagConstraints();
-        c.gridx = 1;
-        c.gridy = 4;
-        c.gridwidth = 3;
-        c.fill = GridBagConstraints.HORIZONTAL;
-        grid.add(samplesslider, c);
-        c = new GridBagConstraints();
-        c.gridx = 4;
-        c.gridy = 3;
-        c.gridwidth = 3;
-        c.fill = GridBagConstraints.HORIZONTAL;
-        grid.add(new JLabel("Lambda"), c);
-        createWhiteSpace();
-        pack();
-        samplesliderchanged();
-        lambdachange.changedUpdate(null);
-        setVisible(true);
     }
 
     private void createDropdowns() {
@@ -308,6 +321,8 @@ public class MainWindow extends JFrame {
     private void selectedCurveChanged() {
         if (curveBox.getSelectedIndex() == 2 && curves[2] == null) {
             loadCurve();
+        } else {
+            changed();
         }
     }
 
@@ -456,20 +471,20 @@ public class MainWindow extends JFrame {
         JDialog frame = new JDialog(this,
                 String.format(Locale.ENGLISH, "Calculated Curve (%ds,%.1fl)", calculatedsample, calculatedlambda),
                 Dialog.ModalityType.DOCUMENT_MODAL);
-        frame.setResizable(false);
+        frame.setPreferredSize(new Dimension(400, 350));
         frame.add(new CurvePanel(curves[1]));
         frame.pack();
+        frame.setResizable(false);
         frame.setVisible(true);
     }
 
     private void showHDRPreview() {
         JDialog frame = new JDialog(this, prefix + "_HDR", Dialog.ModalityType.DOCUMENT_MODAL);
+        frame.setPreferredSize(new Dimension(400, 350));
         frame.add(new JScrollPane(new JLabel(new ImageIcon(hdrImage))));
         frame.pack();
-        frame.setVisible(true);
-        // Allow resizing until first shown
-        // Bug Windows allows then resizing(openjdk), but ubuntu not (oracle jdk)
         frame.setResizable(false);
+        frame.setVisible(true);
     }
 
     private ICameraCurve reCalculateCurvefromSource() {
@@ -502,9 +517,9 @@ public class MainWindow extends JFrame {
                 curves[2] = new CameraCurve(new FileInputStream(chooser.getSelectedFile()));
                 curveBox.setSelectedIndex(2);
             } catch (ClassNotFoundException r) {
-                JOptionPane.showMessageDialog(this, "Missing Dependency");
+                JOptionPane.showMessageDialog(this, "Missing Dependency, please reinstall");
             } catch (IOException r) {
-                JOptionPane.showMessageDialog(this, "Failed to Read Curve");
+                JOptionPane.showMessageDialog(this, "Failed to read Curve");
             }
         }
         changed();
@@ -516,7 +531,8 @@ public class MainWindow extends JFrame {
     }
 
     private void changed() {
-        runHDR.setEnabled(images != null && textfield.getForeground() != Color.RED);
+        runHDR.setEnabled(images != null
+        && (curveBox.getSelectedIndex() != 1 || textfield.getForeground() != Color.RED));
         saveHDR.setEnabled(hdrImage != null);
         hDRPreviewbutton.setEnabled(hdrImage != null);
         saveCurve.setEnabled(curves[1] != null && samplesslider.getValue() == calculatedsample

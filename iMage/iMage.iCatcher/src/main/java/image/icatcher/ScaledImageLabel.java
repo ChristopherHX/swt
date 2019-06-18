@@ -12,11 +12,15 @@ import javax.swing.SwingConstants;
  * ScaledImageIcon
  */
 public class ScaledImageLabel extends JLabel {
+    private static final long serialVersionUID = -4093859895957071110L;
     Image orig;
     ImageIcon ico;
     double scale = 1;
     boolean fit;
 
+    /**
+     * create an selfscaling image
+     */
     public ScaledImageLabel(ImageIcon ico) {
         super(ico);
         this.ico = ico;

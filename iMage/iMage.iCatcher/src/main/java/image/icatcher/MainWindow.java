@@ -1,28 +1,23 @@
 package image.icatcher;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
+import java.awt.Color;
 import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.Image;
-import java.awt.TextField;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.Hashtable;
 import java.util.Locale;
 
 import javax.imageio.ImageIO;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -30,12 +25,15 @@ import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSlider;
-import javax.swing.JTextPane;
+import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.filechooser.FileFilter;
 
 import org.apache.commons.imaging.ImageReadException;
@@ -46,6 +44,9 @@ import org.iMage.HDrize.base.images.EnhancedImage;
 import org.iMage.HDrize.base.images.HDRImageIO.ToneMapping;
 import org.iMage.HDrize.matrix.MatrixCalculator;
 
+/**
+ * Mainframe of iCatcher which layout configuration
+ */
 public class MainWindow extends JFrame {
     private static final long serialVersionUID = 1413007845669740256L;
     private JPanel sourcepics;
@@ -62,6 +63,41 @@ public class MainWindow extends JFrame {
     private JButton showCurve;
     private JButton hDRPreviewbutton;
     private JPanel grid;
+    private int calculatedsample;
+    private double lambda;
+    private double calculatedlambda;
+    private JTextField textfield;
+    private JComboBox<String> tonebox;
+    private ImageIcon image;
+    private JLabel samplesl;
+
+    private class LambdaChangedListener implements DocumentListener {
+            private void textchanged() {
+                try {
+                    lambda = Double.parseDouble(textfield.getText());
+                    textfield.setForeground(lambda < 1 || lambda > 100 ? Color.RED : Color.BLACK);
+                } catch (NumberFormatException format) {
+                    textfield.setForeground(Color.RED);
+                }
+                changed();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                textchanged();
+            }
+
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                textchanged();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                textchanged();
+            }
+    }
+
     private static String minPrefix(File[] strings, int min) {
         if (strings.length == 0 || strings[0].getName().length() <= min) {
             return null;
@@ -77,344 +113,174 @@ public class MainWindow extends JFrame {
         return strings[0].getName();
     }
 
-    public MainWindow() throws URISyntaxException {
-        (curves[0] = new CameraCurve()).calculate();
-        var file = getClass().getClassLoader().getResource("default.png");
+    /**
+     * Creates and show iCatchers MainWindow
+     */
+    public MainWindow() {
+        createAndShowUI();
+    }
+
+    private void createAndShowUI() {
+        curves[0] = new CameraCurve();
+        curves[0].calculate();
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setTitle("iMage.iCatcher");
-        // Unset for real Responsiveness
-        setResizable(false);
-        setSize(800, 700);
+        setResizable(false); // Unset for real Responsiveness
         setPreferredSize(new Dimension(800, 700));
-        // RealGridlayout
         setLayout(new BorderLayout());
-        grid = new JPanel(new GridBagLayout());
+        grid = new JPanel(new GridBagLayout()); // RealGridlayout
         add(grid);
+        createImageContainer();
+        createDropdowns();
+        JButton loadDir = new JButton("LOAD DIR");
+        loadDir.addActionListener(e -> loadSourceImages());
+        var c = new GridBagConstraints();
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.gridx = 1;
+        c.gridy = 7;
+        c.gridwidth = 2;
+        grid.add(loadDir, c);
+        saveHDR = new JButton("Save HDR");
+        saveHDR.addActionListener(e -> saveHDRImage());
+        c = new GridBagConstraints();
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.gridx = 5;
+        c.gridy = 1;
+        c.gridwidth = 2;
+        grid.add(saveHDR, c);
+        runHDR = new JButton("RUN HDrize");
+        runHDR.addActionListener(e -> runHDrize());
+        c = new GridBagConstraints();
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.gridx = 5;
+        c.gridy = 7;
+        c.gridwidth = 2;
+        grid.add(runHDR, c);
+        saveCurve = new JButton("saveCurve");
+        saveCurve.addActionListener(e -> saveCurve());
+        c = new GridBagConstraints();
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.gridx = 3;
+        c.gridy = 1;
+        c.gridwidth = 2;
+        grid.add(saveCurve, c);
+        JButton loadCurve = new JButton("loadCurve");
+        loadCurve.addActionListener(e -> loadCurve());
+        c = new GridBagConstraints();
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.gridx = 3;
+        c.gridy = 7;
+        c.gridwidth = 2;
+        grid.add(loadCurve, c);
+        showCurve = new JButton("showCurve");
+        showCurve.addActionListener(e -> showCurve());
+        c = new GridBagConstraints();
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.gridx = 1;
+        c.gridy = 1;
+        c.gridwidth = 2;
+        grid.add(showCurve, c);
+        textfield = new JTextField("20.0");
+        var lambdachange = new LambdaChangedListener();
+        textfield.getDocument().addDocumentListener(lambdachange);
+        c = new GridBagConstraints();
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.gridx = 4;
+        c.gridy = 4;
+        c.gridwidth = 3;
+        grid.add(textfield, c);
+        c = new GridBagConstraints();
+        c.gridx = 1;
+        c.gridy = 3;
+        c.gridwidth = 3;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        samplesl = new JLabel();
+        grid.add(samplesl, c);
+        samplesslider = new JSlider(SwingConstants.HORIZONTAL, 1, 1000, 500);
+        samplesslider.addChangeListener(e -> samplesliderchanged());
+        Hashtable<Integer, JLabel> labeltable = new Hashtable<>();
+        labeltable.put(1, new JLabel("1"));
+        labeltable.put(1000, new JLabel("1000"));
+        samplesslider.setLabelTable(labeltable);
+        samplesslider.setPaintLabels(true);
+        c = new GridBagConstraints();
+        c.gridx = 1;
+        c.gridy = 4;
+        c.gridwidth = 3;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        grid.add(samplesslider, c);
+        c = new GridBagConstraints();
+        c.gridx = 4;
+        c.gridy = 3;
+        c.gridwidth = 3;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        grid.add(new JLabel("Lambda"), c);
+        createWhiteSpace();
+        pack();
+        samplesliderchanged();
+        lambdachange.changedUpdate(null);
+        setVisible(true);
+    }
+
+    private void createDropdowns() {
+        var textpane = new JLabel("Camera Curve", SwingConstants.LEFT);
+        var c = new GridBagConstraints();
+        c.gridx = 0;
+        c.gridy = 3;
+        c.gridwidth = 1;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        grid.add(textpane, c);
+        curveBox = new JComboBox<>(new String[] { "Standard Curve", "Calculated Curve", "Loaded Curve" });
+        curveBox.addActionListener(e -> selectedCurveChanged());
+        c = new GridBagConstraints();
+        c.gridx = 0;
+        c.gridy = 4;
+        c.gridwidth = 1;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        grid.add(curveBox, c);
+        var tonepane = new JLabel("Tone Mapping");
+        c = new GridBagConstraints();
+        c.gridx = 0;
+        c.gridy = 6;
+        c.gridwidth = 1;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        grid.add(tonepane, c);
+        tonebox = new JComboBox<>(new String[] { "Simple Map", "Standard Gamma", "SRGB Gamma" });
+        c = new GridBagConstraints();
+        c.gridx = 0;
+        c.gridy = 7;
+        c.gridwidth = 1;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        grid.add(tonebox, c);
+    }
+
+    private void createImageContainer() {
+        var file = getClass().getClassLoader().getResource("default.png");
         sourcepics = new JPanel(new FlowLayout());
         var c = new GridBagConstraints();
         c.gridx = 0;
         c.gridy = 0;
         c.gridheight = 2;
         c.fill = GridBagConstraints.BOTH;
-        // c.weightx = 0.5;
-        grid.add(new JScrollPane(sourcepics), c);
+        var sourcescrollpane = new JScrollPane(sourcepics);
+        sourcescrollpane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+        sourcescrollpane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+        grid.add(sourcescrollpane, c);
         hDRPreviewbutton = new JButton();
-        var image = new ImageIcon(file);
+        image = new ImageIcon(file);
         hDRPreviewbutton.setIcon(image);
-        hDRPreviewbutton.addActionListener(e -> {
-            JDialog frame = new JDialog(this, prefix + "_HDR", Dialog.ModalityType.DOCUMENT_MODAL);
-            frame.add(new JScrollPane(new JLabel(new ImageIcon(hdrImage))));
-            frame.pack();
-            frame.setVisible(true);
-            frame.setResizable(false);
-        });
+        hDRPreviewbutton.addActionListener(e -> showHDRPreview());
         c = new GridBagConstraints();
         c.gridx = 1;
         c.gridy = 0;
         c.gridwidth = 6;
-        // c.weightx = 0.5;
         c.fill = GridBagConstraints.HORIZONTAL;
         grid.add(hDRPreviewbutton, c);
+    }
 
-        //Box leftJPanel = Box.createVerticalBox();
-        //leftJPanel.add(Box.createVerticalGlue());
-
-        var textpane = new JLabel("Camera Curve", SwingConstants.LEFT);// new JTextPane();
-        // textpane.setHorizontalAlignment(SwingConstants.LEFT);
-        // textpane.setText("Camera Curve");
-        // leftJPanel.add(new JTextPane());
-        c = new GridBagConstraints();
-        c.gridx = 0;
-        c.gridy = 3;
-        c.gridwidth = 1;
-        // c.weightx = 0.5;
-        c.fill = GridBagConstraints.HORIZONTAL;
-        grid.add(textpane, c);
-        //leftJPanel.add(textpane, Component.LEFT_ALIGNMENT);
-        curveBox = new JComboBox<>(new String[] { "Standard Curve", "Calculated Curve", "Loaded Curve" });
-        curveBox.addActionListener(e -> {if (curveBox.getSelectedIndex() == 2 && curves[2] == null) loadCurve();});
-        c = new GridBagConstraints();
-        c.gridx = 0;
-        c.gridy = 4;
-        c.gridwidth = 1;
-        // c.weightx = 0.5;
-        c.fill = GridBagConstraints.HORIZONTAL;
-        grid.add(curveBox, c);
-        //leftJPanel.add(curveBox);
-        //leftJPanel.add(Box.createVerticalGlue());
-        var tonepane = new JLabel("Tone Mapping", SwingConstants.LEADING);
-        // var tonepane = new JTextPane();
-        // tonepane.setText("Tone Mapping");
-        // leftJPanel.add(new JTextPane());
-        c = new GridBagConstraints();
-        c.gridx = 0;
-        c.gridy = 6;
-        c.gridwidth = 1;
-        // c.weightx = 0.5;
-        c.fill = GridBagConstraints.HORIZONTAL;
-        grid.add(tonepane, c);
-        //leftJPanel.add(tonepane, Component.LEFT_ALIGNMENT);
-        var tonebox = new JComboBox<>(new String[] { "Simple Map", "Standard Gamma", "SRGB Gamma" });
-        //leftJPanel.add(tonebox);
-        //leftJPanel.add(Box.createVerticalGlue());
-        c = new GridBagConstraints();
-        c.gridx = 0;
-        c.gridy = 7;
-        c.gridwidth = 1;
-        // c.weightx = 0.5;
-        c.fill = GridBagConstraints.HORIZONTAL;
-        grid.add(tonebox, c);
-        // c = new GridBagConstraints();
-        // c.fill = GridBagConstraints.HORIZONTAL;
-        // c.gridx = 0;
-        // c.gridy = 3;
-        // c.weighty = 1;
-        // c.weightx = 0.5;
-        //grid.add(leftJPanel, c);
-        //JPanel rightJPanel = new JPanel();
-
-        samplesslider = new JSlider(SwingConstants.HORIZONTAL, 1, 1000, 500);
-        samplesslider.addChangeListener(e -> {
-
-        });
-
-        Hashtable<Integer, JLabel> labeltable = new Hashtable<>();
-        labeltable.put(1, new JLabel("1"));
-        labeltable.put(1000, new JLabel("1000"));
-        samplesslider.setLabelTable(labeltable);
-        samplesslider.setPaintLabels(true);
-        //rightJPanel.add(samplesslider);
-        //rightJPanel.setLayout(new BoxLayout(rightJPanel, BoxLayout.Y_AXIS));
-
-        JButton loadDir = new JButton("LOAD DIR");
-        loadDir.addActionListener(e -> {
-            JFileChooser chooser = new JFileChooser();
-            chooser.setDialogTitle("Load Directory");
-            chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-            chooser.setAcceptAllFileFilterUsed(false);
-            chooser.setFileFilter(new FileFilter() {
-                @Override
-                public String getDescription() {
-                    return "Folder";
-                }
-
-                @Override
-                public boolean accept(File f) {
-                    return true;
-                }
-            });
-            if(chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
-                File[] files = chooser.getSelectedFile().listFiles(new FilenameFilter() {
-                    @Override
-                    public boolean accept(File dir, String name) {
-                        return name.endsWith(".jpg") || name.endsWith(".jpeg") || name.endsWith(".jpe") || name.endsWith(".jfif");
-                    }
-                });
-                if (files.length % 2 == 0 && files.length >= 3) {
-                    // JOptionPane.showMessageDialog(null, "");
-                    changed();
-                    return;
-                }
-                prefix = minPrefix(files, 3);
-                images = new EnhancedImage[files.length];
-                sourcepics.removeAll();
-                try {
-                    for (int i = 0; i < files.length; i++) {
-                        images[i] = new EnhancedImage(new FileInputStream(files[i]));
-                        ImageIcon icon = new ImageIcon(generatePreview(ImageIO.read(files[i])));
-                        JLabel label = new JLabel(icon);
-                        sourcepics.add(label);
-                    }
-                } catch (IOException e1) {
-                    // controlHDR();
-                } catch (ImageReadException e1) {
-                    // controlHDR();
-                }
-                pack();
-            }
-            changed();
-        });
-        c = new GridBagConstraints();
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.gridx = 1;
-        c.gridy = 7;
-        c.gridwidth = 2;
-        // c.weightx = 1.0 / 6;
-        grid.add(loadDir, c);
-        //rightJPanel.add(loadDir);
-
-        saveHDR = new JButton("Save HDR");
-        saveHDR.addActionListener(e -> {
-            JFileChooser chooser = new JFileChooser();
-            chooser.setSelectedFile(new File(prefix + "_HDR.png"));
-            chooser.setDialogTitle("Save HDR");
-            chooser.setAcceptAllFileFilterUsed(false);
-            chooser.setFileFilter(new FileFilter() {
-                @Override
-                public String getDescription() {
-                    return "PNG Image";
-                }
-
-                @Override
-                public boolean accept(File f) {
-                    return f.getName().endsWith(".png");
-                }
-            });
-            if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
-                var ifile = chooser.getSelectedFile();
-                if (!ifile.getName().endsWith(".png")) {
-                    ifile = new File(ifile.getPath() + ".png");
-                }
-                try {
-                    ImageIO.write(hdrImage, "png", ifile);                    
-                } catch (IOException r) {
-                    //TODO: handle exception
-                }
-            }
-        });
-        c = new GridBagConstraints();
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.gridx = 5;
-        c.gridy = 1;
-        c.gridwidth = 2;
-        // c.weightx = 1.0 / 6;
-        grid.add(saveHDR, c);
-        // rightJPanel.add(saveHDR);
-
-        runHDR = new JButton("RUN HDrize");
-		runHDR.addActionListener(e -> {
-            ICameraCurve curve = curves[curveBox.getSelectedIndex()];
-            if(curve == null) {
-                switch (curveBox.getSelectedIndex()) {
-                    case 1:
-                        curve = curves[1] = new CameraCurve(images, samplesslider.getValue(), 20, new MatrixCalculator());                       
-                    curve.calculate();
-                    break;
-                    case 2:
-                    loadCurve();
-                    default:
-                        break;
-                }
-
-            }
-			hdrImage = hdr.createRGB(images, curve, ToneMapping.values()[tonebox.getSelectedIndex()]);
-            image.setImage(generatePreview(hdrImage));
-            changed();            
-        });
-
-        c = new GridBagConstraints();
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.gridx = 5;
-        c.gridy = 7;
-        c.gridwidth = 2;
-        // c.weightx = 1.0 / 6;
-        grid.add(runHDR, c);
-        
-        //rightJPanel.add(runHDR);
-
-        saveCurve = new JButton("saveCurve");
-		saveCurve.addActionListener(e -> {
-            if(curves[1] == null) {
-                curves[1] = new CameraCurve(images, samplesslider.getValue(), 20, new MatrixCalculator());
-                curves[1].calculate();
-            }
-            JFileChooser chooser = new JFileChooser();
-            chooser.setDialogTitle("Save Curve");
-            chooser.setAcceptAllFileFilterUsed(false);
-            chooser.setFileFilter(new FileFilter() {
-                @Override
-                public String getDescription() {
-                    return "Curve (.bin)";
-                }
-
-                @Override
-                public boolean accept(File f) {
-                    return f.getName().endsWith(".bin");
-                }
-            });
-            if(chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
-                try {
-                    curves[1].save(new FileOutputStream(chooser.getSelectedFile()));
-                } catch (IOException r) {
-                    System.err.println("invalidfile");
-                    //TODO: handle exception
-                }
-            }
-        });
-
-        c = new GridBagConstraints();
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.gridx = 3;
-        c.gridy = 1;
-        c.gridwidth = 2;
-        // c.weightx = 1.0 / 6;
-        grid.add(saveCurve, c);
-
-        //rightJPanel.add(saveCurve);
-
-        JButton loadCurve = new JButton("loadCurve");
-		loadCurve.addActionListener(e -> loadCurve());
-        c = new GridBagConstraints();
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.gridx = 3;
-        c.gridy = 7;
-        c.gridwidth = 2;
-        // c.weightx = 0.5;
-        grid.add(loadCurve, c);
-        //rightJPanel.add(loadCurve);
-
-        showCurve = new JButton("showCurve");
-		showCurve.addActionListener(e -> {
-            JDialog frame = new JDialog(this, String.format(Locale.ENGLISH, "Calculated Curve (%ds,%.1fl)", samplesslider.getValue(), 20.0), Dialog.ModalityType.DOCUMENT_MODAL);
-            frame.setResizable(false);
-            frame.add(new CurvePanel(curves[1]));
-            frame.pack();
-            frame.setVisible(true);
-        });
-        c = new GridBagConstraints();
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.gridx = 1;
-        c.gridy = 1;
-        c.gridwidth = 2;
-        // c.weightx = 1.0 / 6;
-        grid.add(showCurve, c);
-
-        c = new GridBagConstraints();
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.gridx = 4;
-        c.gridy = 4;
-        c.gridwidth = 3;
-        // c.weightx = 0.25;
-        grid.add(new TextField(), c);
-
-        // rightJPanel.add(showCurve);
-        c = new GridBagConstraints();
-        c.gridx = 1;
-        c.gridy = 4;
-        c.gridwidth = 3;
-        c.fill = GridBagConstraints.HORIZONTAL;
-        // c.weightx = 0.25;
-        grid.add(samplesslider, c);
-
-        c = new GridBagConstraints();
-        c.gridx = 1;
-        c.gridy = 3;
-        c.gridwidth = 3;
-        c.fill = GridBagConstraints.HORIZONTAL;
-        // c.weightx = 0.25;
-        grid.add(new JLabel("Samples"), c);
-
-        c = new GridBagConstraints();
-        c.gridx = 4;
-        c.gridy = 3;
-        c.gridwidth = 3;
-        c.fill = GridBagConstraints.HORIZONTAL;
-        // c.weightx = 0.25;
-        grid.add(new JLabel("Lambda"), c);
-
-
+    private void createWhiteSpace() {
         for (int i = 0; i < 7; i++) {
-            c = new GridBagConstraints();
+            var c = new GridBagConstraints();
             c.gridx = i;
             c.gridy = 2;
             c.gridwidth = 1;
@@ -423,15 +289,13 @@ public class MainWindow extends JFrame {
             c.weighty = 0.2;
             grid.add(new JLabel(), c);
         }
-
-        c = new GridBagConstraints();
+        var c = new GridBagConstraints();
         c.gridx = 0;
         c.gridy = 5;
         c.gridwidth = 7;
         c.fill = GridBagConstraints.HORIZONTAL;
         c.weighty = 0.2;
         grid.add(new JLabel(), c);
-
         c = new GridBagConstraints();
         c.gridx = 0;
         c.gridy = 8;
@@ -439,17 +303,186 @@ public class MainWindow extends JFrame {
         c.fill = GridBagConstraints.HORIZONTAL;
         c.weighty = 0.2;
         grid.add(new JLabel(), c);
-
-        //grid.add(rightJPanel, c);
-        pack();
-        // sourcepics.setSize((int)(sourcepics.getWidth() *
-        // ((double)sourcepics.getHeight() / scrollpane.getHeight())),
-        // scrollpane.getHeight());
-        changed();
-        setVisible(true);
     }
 
-    private void loadCurve() {
+    private void selectedCurveChanged() {
+        if (curveBox.getSelectedIndex() == 2 && curves[2] == null) {
+            loadCurve();
+        }
+    }
+
+    private void samplesliderchanged() {
+        samplesl.setText(String.format("Samples (%d)", samplesslider.getValue()));
+        changed();
+    }
+
+    private void runHDrize() {
+        ICameraCurve curve = curves[curveBox.getSelectedIndex()];
+        if (curve == null) {
+            switch (curveBox.getSelectedIndex()) {
+            case 1:
+                curve = reCalculateCurvefromSource();
+                break;
+            case 2:
+                curve = loadCurve();
+                if (curve == null) {
+                    JOptionPane.showMessageDialog(this, "You need a curve loaded");
+                    return;
+                }
+                break;
+            default:
+                JOptionPane.showMessageDialog(this, "Curve not found (Internal Error)");
+                return;
+            }
+        }
+        hdrImage = hdr.createRGB(images, curve, ToneMapping.values()[tonebox.getSelectedIndex()]);
+        image.setImage(generatePreview(hdrImage));
+        changed();
+    }
+
+    private void saveHDRImage() {
+        JFileChooser chooser = new JFileChooser();
+        chooser.setSelectedFile(new File(prefix + "_HDR.png"));
+        chooser.setDialogTitle("Save HDR");
+        chooser.setAcceptAllFileFilterUsed(false);
+        chooser.setFileFilter(new FileFilter() {
+            @Override
+            public String getDescription() {
+                return "PNG Image";
+            }
+
+            @Override
+            public boolean accept(File f) {
+                return f.getName().endsWith(".png");
+            }
+        });
+        if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+            var ifile = chooser.getSelectedFile();
+            if (!ifile.getName().endsWith(".png")) {
+                ifile = new File(ifile.getPath() + ".png");
+            }
+            try {
+                ImageIO.write(hdrImage, "png", ifile);
+            } catch (IOException r) {
+                JOptionPane.showMessageDialog(this, "Failed to Save");
+            }
+        }
+    }
+
+    private void saveCurve() {
+        var curve = reCalculateCurvefromSource();
+        JFileChooser chooser = new JFileChooser();
+        chooser.setDialogTitle("Save Curve");
+        chooser.setAcceptAllFileFilterUsed(false);
+        chooser.setFileFilter(new FileFilter() {
+            @Override
+            public String getDescription() {
+                return "Curve (.bin)";
+            }
+
+            @Override
+            public boolean accept(File f) {
+                return f.getName().endsWith(".bin");
+            }
+        });
+        if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+            try {
+                curve.save(new FileOutputStream(chooser.getSelectedFile()));
+            } catch (IOException r) {
+                JOptionPane.showMessageDialog(this, "Failed to Save");
+            }
+        }
+    }
+
+    private void loadSourceImages() {
+        JFileChooser chooser = new JFileChooser();
+        chooser.setDialogTitle("Load Directory");
+        chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        chooser.setAcceptAllFileFilterUsed(false);
+        chooser.setFileFilter(new FileFilter() {
+            @Override
+            public String getDescription() {
+                return "Folder";
+            }
+
+            @Override
+            public boolean accept(File f) {
+                return true;
+            }
+        });
+        if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+            File[] files = chooser.getSelectedFile().listFiles(new FilenameFilter() {
+                @Override
+                public boolean accept(File dir, String name) {
+                    return name.endsWith(".jpg") || name.endsWith(".jpeg") || name.endsWith(".jpe")
+                            || name.endsWith(".jfif");
+                }
+            });
+            if (files.length % 2 == 0 && files.length >= 3) {
+                JOptionPane.showMessageDialog(null, "jpeg Filecount must be odd and greater than 2");
+                changed();
+                return;
+            }
+            prefix = minPrefix(files, 3);
+            if (prefix == null) {
+                JOptionPane.showMessageDialog(null, "jpeg files have to a common prefix with min 3 chars");
+                changed();
+                return;
+            }
+            images = new EnhancedImage[files.length];
+            sourcepics.removeAll();
+            try {
+                for (int i = 0; i < files.length; i++) {
+                    images[i] = new EnhancedImage(new FileInputStream(files[i]));
+                    ImageIcon icon = new ImageIcon(generatePreview(ImageIO.read(files[i])));
+                    JLabel label = new JLabel(icon);
+                    sourcepics.add(label);
+                }
+            } catch (IOException e1) {
+                JOptionPane.showMessageDialog(this, "Image can't be read correctly from filesytem");
+                sourcepics.removeAll();
+                images = null;
+            } catch (ImageReadException e1) {
+                JOptionPane.showMessageDialog(this, "Image can't be read correctly");
+                sourcepics.removeAll();
+                images = null;
+            }
+            pack();
+        }
+        changed();
+    }
+
+    private void showCurve() {
+        JDialog frame = new JDialog(this,
+                String.format(Locale.ENGLISH, "Calculated Curve (%ds,%.1fl)", calculatedsample, calculatedlambda),
+                Dialog.ModalityType.DOCUMENT_MODAL);
+        frame.setResizable(false);
+        frame.add(new CurvePanel(curves[1]));
+        frame.pack();
+        frame.setVisible(true);
+    }
+
+    private void showHDRPreview() {
+        JDialog frame = new JDialog(this, prefix + "_HDR", Dialog.ModalityType.DOCUMENT_MODAL);
+        frame.add(new JScrollPane(new JLabel(new ImageIcon(hdrImage))));
+        frame.pack();
+        frame.setVisible(true);
+        // Allow resizing until first shown
+        // Bug Windows allows then resizing(openjdk), but ubuntu not (oracle jdk)
+        frame.setResizable(false);
+    }
+
+    private ICameraCurve reCalculateCurvefromSource() {
+        if (curves[1] == null || calculatedsample != samplesslider.getValue()) {
+            calculatedsample = samplesslider.getValue();
+            calculatedlambda = lambda;
+            curves[1] = new CameraCurve(images, calculatedsample, calculatedlambda, new MatrixCalculator());
+            curves[1].calculate();
+        }
+        return curves[1];
+    }
+
+    private ICameraCurve loadCurve() {
         JFileChooser chooser = new JFileChooser();
         chooser.setDialogTitle("Load Curve");
         chooser.setAcceptAllFileFilterUsed(false);
@@ -464,34 +497,18 @@ public class MainWindow extends JFrame {
                 return f.getName().endsWith(".bin");
             }
         });
-        if(chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+        if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
             try {
                 curves[2] = new CameraCurve(new FileInputStream(chooser.getSelectedFile()));
                 curveBox.setSelectedIndex(2);
             } catch (ClassNotFoundException r) {
-                //TODO: handle exception
+                JOptionPane.showMessageDialog(this, "Missing Dependency");
             } catch (IOException r) {
-            //TODO: handle exception
-        }
+                JOptionPane.showMessageDialog(this, "Failed to Read Curve");
+            }
         }
         changed();
-    }
-
-    private BufferedImage drawCurve() {
-        BufferedImage image = new BufferedImage(256, 512, BufferedImage.TYPE_INT_ARGB);
-        int index = curveBox.getSelectedIndex();
-        for (int i = 0; i < image.getWidth(); i++) {
-            image.setRGB(i, (int)(curves[index].getResponse(new int[]{i, 0, 0})[0] * 100), 0xffff0000 );
-            image.setRGB(i, (int)(curves[index].getResponse(new int[]{0, i, 0})[1] * 100), 0xff00ff00 );
-            image.setRGB(i, (int)(curves[index].getResponse(new int[]{0, 0, i})[2] * 100), 0xff0000ff );
-            // image.setRGB(i, (int)(curves[curveBox.getSelectedIndex()].getResponse(new int[]{i, 0, 0})[1] * 100), 0xff0000ff );
-            // image.setRGB(i, (int)(curves[curveBox.getSelectedIndex()].getResponse(new int[]{0, i, 0})[2] * 100), 0xffff0000 );
-            // image.setRGB(i, (int)(curves[curveBox.getSelectedIndex()].getResponse(new int[]{0, 0, i})[0] * 100), 0xff00ff00 );
-            // image.setRGB(i, (int)(curves[curveBox.getSelectedIndex()].getResponse(new int[]{i, 0, 0})[1] * 100), 0xff00ff00 );
-            // image.setRGB(i, (int)(curves[curveBox.getSelectedIndex()].getResponse(new int[]{0, i, 0})[2] * 100), 0xff0000ff );
-            // image.setRGB(i, (int)(curves[curveBox.getSelectedIndex()].getResponse(new int[]{0, 0, i})[0] * 100), 0xffff0000 );
-        }
-        return image;
+        return curves[2];
     }
 
     private Image generatePreview(Image read) {
@@ -499,10 +516,12 @@ public class MainWindow extends JFrame {
     }
 
     private void changed() {
-        runHDR.setEnabled(images != null);
+        runHDR.setEnabled(images != null && textfield.getForeground() != Color.RED);
         saveHDR.setEnabled(hdrImage != null);
         hDRPreviewbutton.setEnabled(hdrImage != null);
-        saveCurve.setEnabled(curves[1] != null);
-        showCurve.setEnabled(curves[1] != null);
+        saveCurve.setEnabled(curves[1] != null && samplesslider.getValue() == calculatedsample
+        && lambda == calculatedlambda && textfield.getForeground() != Color.RED);
+        showCurve.setEnabled(curves[1] != null && samplesslider.getValue() == calculatedsample
+        && lambda == calculatedlambda && textfield.getForeground() != Color.RED);
     }
 }

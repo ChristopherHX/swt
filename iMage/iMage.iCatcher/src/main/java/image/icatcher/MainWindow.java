@@ -433,7 +433,7 @@ public class MainWindow extends JFrame {
                             || name.endsWith(".jfif");
                 }
             });
-            if (files.length % 2 == 0 && files.length >= 3) {
+            if (files.length % 2 == 0 || files.length < 3) {
                 JOptionPane.showMessageDialog(null, "jpeg Filecount must be odd and greater than 2");
                 changed();
                 return;
@@ -474,7 +474,7 @@ public class MainWindow extends JFrame {
         frame.setPreferredSize(new Dimension(400, 350));
         frame.add(new CurvePanel(curves[1]));
         frame.pack();
-        frame.setResizable(false);
+        // frame.setResizable(false);
         frame.setVisible(true);
     }
 
@@ -488,7 +488,7 @@ public class MainWindow extends JFrame {
     }
 
     private ICameraCurve reCalculateCurvefromSource() {
-        if (curves[1] == null || calculatedsample != samplesslider.getValue()) {
+        if (curves[1] == null || calculatedsample != samplesslider.getValue() || calculatedlambda != lambda) {
             calculatedsample = samplesslider.getValue();
             calculatedlambda = lambda;
             curves[1] = new CameraCurve(images, calculatedsample, calculatedlambda, new MatrixCalculator());

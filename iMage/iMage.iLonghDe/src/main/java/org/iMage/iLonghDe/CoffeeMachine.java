@@ -8,13 +8,13 @@ import org.iMage.iLonghDe.base.IStateMachine;
  * name 3 faults
  */
 public class CoffeeMachine implements IStateMachine {
-    private State currentstate;
+    private CoffeeMachineState currentstate;
 
     public CoffeeMachine() {
-        setState(State.Standby);
+        setState(CoffeeMachineState.Standby);
     }
 
-    private void setState(State state) {
+    private void setState(CoffeeMachineState state) {
         if(currentstate != state) {
             if(currentstate != null) {
                 currentstate.exit(this);

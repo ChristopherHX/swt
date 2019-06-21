@@ -3,7 +3,7 @@ package org.iMage.iLonghDe;
 import org.iMage.iLonghDe.base.IState;
 import org.iMage.iLonghDe.base.IStateMachine;
 
-public enum State implements IState {
+public enum CoffeeMachineState implements IState {
     Standby {
         @Override
         public void entry(IStateMachine machine) {
@@ -16,22 +16,22 @@ public enum State implements IState {
         }
 
         @Override
-        public State powerButtonPressed() {
+        public CoffeeMachineState powerButtonPressed() {
             return null;
         }
 
         @Override
-        public State standbyButtonPressed() {
+        public CoffeeMachineState standbyButtonPressed() {
             return Waiting;
         }
 
         @Override
-        public State coffeeButtonPressed() {
+        public CoffeeMachineState coffeeButtonPressed() {
             return this;
         }
 
         @Override
-        public State cleaningButtonPressed() {
+        public CoffeeMachineState cleaningButtonPressed() {
             return this;
         }
     },
@@ -51,22 +51,22 @@ public enum State implements IState {
          * Realy why not turn off
          */
         @Override
-        public State powerButtonPressed() {
+        public CoffeeMachineState powerButtonPressed() {
             return this;
         }
 
         @Override
-        public State standbyButtonPressed() {
+        public CoffeeMachineState standbyButtonPressed() {
             return Standby;
         }
 
         @Override
-        public State coffeeButtonPressed() {
+        public CoffeeMachineState coffeeButtonPressed() {
             return Brewing;
         }
 
         @Override
-        public State cleaningButtonPressed() {
+        public CoffeeMachineState cleaningButtonPressed() {
             return Cleaing;
         }
 
@@ -87,22 +87,22 @@ public enum State implements IState {
          * Realy why not turn off
          */
         @Override
-        public State powerButtonPressed() {
+        public CoffeeMachineState powerButtonPressed() {
             return this;
         }
 
         @Override
-        public State standbyButtonPressed() {
+        public CoffeeMachineState standbyButtonPressed() {
             return Standby;
         }
 
         @Override
-        public State coffeeButtonPressed() {
+        public CoffeeMachineState coffeeButtonPressed() {
             return this;
         }
 
         @Override
-        public State cleaningButtonPressed() {
+        public CoffeeMachineState cleaningButtonPressed() {
             return Waiting;
         }
 
@@ -123,22 +123,22 @@ public enum State implements IState {
          * Realy why not turn off
          */
         @Override
-        public State powerButtonPressed() {
+        public CoffeeMachineState powerButtonPressed() {
             return this;
         }
 
         @Override
-        public State standbyButtonPressed() {
+        public CoffeeMachineState standbyButtonPressed() {
             return Standby;
         }
 
         @Override
-        public State coffeeButtonPressed() {
+        public CoffeeMachineState coffeeButtonPressed() {
             return Waiting;
         }
 
         @Override
-        public State cleaningButtonPressed() {
+        public CoffeeMachineState cleaningButtonPressed() {
             return this;
         }
 
@@ -160,22 +160,22 @@ public enum State implements IState {
         }
 
         @Override
-        public State powerButtonPressed() {
+        public CoffeeMachineState powerButtonPressed() {
             return this;
         }
 
         @Override
-        public State standbyButtonPressed() {
+        public CoffeeMachineState standbyButtonPressed() {
             return this;
         }
 
         @Override
-        public State coffeeButtonPressed() {
+        public CoffeeMachineState coffeeButtonPressed() {
             return this;
         }
 
         @Override
-        public State cleaningButtonPressed() {
+        public CoffeeMachineState cleaningButtonPressed() {
             return this;
         }
 
@@ -195,20 +195,20 @@ public enum State implements IState {
     /**
      * power Button pressed
      */
-    public abstract State powerButtonPressed();
+    public abstract CoffeeMachineState powerButtonPressed();
 
     /**
      * standby Button pressed
      */
-    public abstract State  standbyButtonPressed();
+    public abstract CoffeeMachineState  standbyButtonPressed();
 
     /**
      * coffee Button pressed
      */
-    public abstract State  coffeeButtonPressed();
+    public abstract CoffeeMachineState  coffeeButtonPressed();
 
     /**
      * cleaning Button pressed
      */
-    public abstract State  cleaningButtonPressed();
+    public abstract CoffeeMachineState  cleaningButtonPressed();
 }

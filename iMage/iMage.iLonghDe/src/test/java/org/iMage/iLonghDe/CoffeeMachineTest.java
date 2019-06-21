@@ -32,6 +32,11 @@ public class CoffeeMachineTest {
         machine.coffeeButtonPressed();
         var coffeestate = machine.getCurrentState();
         assertNotEquals(waitstate, coffeestate);
+        // Need to keep the state for some Buttons
+        machine.cleaningButtonPressed();
+        assertEquals(coffeestate, machine.getCurrentState());
+        machine.powerButtonPressed();
+        assertEquals(coffeestate, machine.getCurrentState());
         machine.coffeeButtonPressed();
         assertEquals(waitstate, machine.getCurrentState());
         machine.standbyButtonPressed();

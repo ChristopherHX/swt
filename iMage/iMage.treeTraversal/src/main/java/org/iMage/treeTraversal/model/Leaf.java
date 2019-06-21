@@ -18,4 +18,9 @@ public class Leaf extends AbstractTree {
   public Leaf(File file, Tree parent) {
     super(file, parent);
   }
+
+  @Override
+  public void accept(IVisitor visitor) {
+    visitor.visit(this);
+  }
 }

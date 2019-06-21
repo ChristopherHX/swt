@@ -29,21 +29,24 @@ public abstract class Runner {
   }
 
   /**
-   * Builds a {@link Tree} starting with a start folder.
+   * Builds a {@link Tree} at currentFolder with a current folder and its parent.
    *
-   * @param startFolder
-   *          the start folder
+   * @param currentFolder
+   *          the currentFolder folder
    * @param parent
    *          the optional parent
    * @return the {@link Tree}
    */
-  private Tree buildFolderStructure(File startFolder, Tree parent) {
-    var folder = new Node(startFolder, parent);
-    for (var file : startFolder.listFiles()) {
-      if(file.isDirectory()) {
-        folder.addChild(buildFolderStructure(file));
-      } else {
-        folder.addChild(new Leaf(file, folder));
+  private Tree buildFolderStructure(File currentFolder, Tree parent) {
+    var folder = new Node(currentFolder, parent);
+    var files = currentFolder.listFiles();
+    if (files != null) {
+      for (var file : files) {
+        if(file.isDirectory()) {
+          folder.addChild(buildFolderStructure(file, folder));
+        } else {
+          folder.addChild(new Leaf(file, folder));
+        }
       }
     }
     return folder;

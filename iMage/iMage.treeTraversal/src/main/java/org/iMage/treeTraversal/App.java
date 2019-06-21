@@ -1,5 +1,6 @@
 package org.iMage.treeTraversal;
 
+import java.io.File;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -7,6 +8,10 @@ import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.iMage.treeTraversal.runners.Runner;
+import org.iMage.treeTraversal.runners.SingleFileExtensionRunner;
+import org.iMage.treeTraversal.traverser.BreathTranversal;
+import org.iMage.treeTraversal.traverser.DepthTranversal;
 
 
 /**
@@ -55,8 +60,13 @@ public final class App {
       System.err.println("Wrong command line arguments given: " + e.getMessage());
       System.exit(1);
     }
-    throw new UnsupportedOperationException("Implement me!");
-
+    Runner runner = new SingleFileExtensionRunner(cmd.hasOption(PNG_OPT) ? ".png" : ".jpg");
+    var dir = new File(cmd.getOptionValue(DIRECTORY_OPT));
+    if (cmd.hasOption(BFS_OPT)) {
+      runner.run(dir, BreathTranversal.class);
+    } else {
+      runner.run(dir, DepthTranversal.class);
+    }
   }
 
   /**

@@ -8,6 +8,7 @@ import org.iMage.treeTraversal.model.Tree;
  * Defines an iterator over the elements of a {@link Tree}.
  */
 public abstract class Traversal implements Iterator<Tree> {
+  protected Tree startItem;
 
   /**
    * Create by starting item.
@@ -17,7 +18,7 @@ public abstract class Traversal implements Iterator<Tree> {
    *
    */
   protected Traversal(Tree startItem) {
-	  throw new UnsupportedOperationException("Implement me!");
+    this.startItem = startItem;
   }
 
 }

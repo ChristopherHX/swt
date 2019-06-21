@@ -64,4 +64,9 @@ public class Node extends AbstractTree {
     return Collections.unmodifiableCollection(this.children);
   }
 
+  @Override
+  public void accept(IVisitor visitor) {
+    visitor.visit(this);
+  }
+
 }

@@ -9,6 +9,8 @@ import org.iMage.treeTraversal.traverser.Traversal;
  * Defines an element of a tree.
  */
 public interface Tree {
+  void accept(IVisitor visitor);
+
   /**
    * Get associated file.
    *

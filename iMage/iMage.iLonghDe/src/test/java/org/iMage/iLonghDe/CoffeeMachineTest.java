@@ -42,4 +42,22 @@ public class CoffeeMachineTest {
         machine.standbyButtonPressed();
         assertEquals(standbystate, machine.getCurrentState());
     }
+
+    /**
+     * Tests Cleaning the machine
+     */
+    @Test
+    public void CleaningTest() {
+        var standbystate = machine.getCurrentState();
+        machine.standbyButtonPressed();
+        var waitstate = machine.getCurrentState();
+        assertNotEquals(standbystate, waitstate);
+        machine.cleaningButtonPressed();
+        var cleaningstate = machine.getCurrentState();
+        assertNotEquals(waitstate, cleaningstate);
+        machine.cleaningButtonPressed();
+        assertEquals(waitstate, machine.getCurrentState());
+        machine.standbyButtonPressed();
+        assertEquals(standbystate, machine.getCurrentState());
+    }
 }

@@ -32,10 +32,8 @@ public class DepthTranversal extends Traversal implements IVisitor {
     public void visit(Leaf leaf) {
         if (cur == null) {
             cur = leaf;
-        } else {
-            if (cur == leaf) {
-                cur = null;
-            }
+        } else if (cur == leaf) {
+            cur = null;
         }
     }
 

@@ -1,6 +1,7 @@
 package org.iMage.treeTraversal.model;
 
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Iterator;
 import java.util.Objects;
 
@@ -17,10 +18,8 @@ public abstract class AbstractTree implements Tree {
 	/**
 	 * Create by file and parent.
 	 *
-	 * @param file
-	 *          the file
-	 * @param parent
-	 *          the parent
+	 * @param file   the file
+	 * @param parent the parent
 	 */
 	protected AbstractTree(File file, Tree parent) {
 		this.file = Objects.requireNonNull(file, "file cannot be null");
@@ -30,8 +29,7 @@ public abstract class AbstractTree implements Tree {
 	/**
 	 * Create by file (without parent).
 	 *
-	 * @param file
-	 *          the file
+	 * @param file the file
 	 */
 	protected AbstractTree(File file) {
 		this(file, null);
@@ -54,6 +52,22 @@ public abstract class AbstractTree implements Tree {
 
 	@Override
 	public final Iterator<Tree> getIterator(Class<? extends Traversal> traversal) {
-		throw new UnsupportedOperationException("Implement me!");
+		try {
+			return traversal.getConstructor(Tree.class).newInstance(this);
+		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+				| NoSuchMethodException | SecurityException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	public final Iterable<Tree> getIterable(Class<? extends Traversal> traversal) {
+		return new Iterable<Tree>(){
+			@Override
+			public Iterator<Tree> iterator() {
+				return getIterator(traversal);
+			}
+		};
 	}
 }

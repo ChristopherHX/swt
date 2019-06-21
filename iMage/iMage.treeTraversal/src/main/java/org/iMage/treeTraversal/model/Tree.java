@@ -38,4 +38,13 @@ public interface Tree {
    * @return the iterator
    */
   Iterator<Tree> getIterator(Class<? extends Traversal> traversal);
+
+  /**
+   * Get iterable by traversal.
+   * 
+   * @param traversal
+   *          the class of traversal
+   * @return the iterator
+   */
+  Iterable<Tree> getIterable(Class<? extends Traversal> traversal);
 }

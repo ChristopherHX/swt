@@ -1,8 +1,11 @@
 package org.iMage.treeTraversal.runners;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
+import org.iMage.treeTraversal.model.Node;
 import org.iMage.treeTraversal.model.Tree;
 import org.iMage.treeTraversal.traverser.Traversal;
 
@@ -33,7 +36,7 @@ public abstract class Runner {
    * @return the {@link Tree}
    */
   private Tree buildFolderStructure(File startFolder) {
-	  throw new UnsupportedOperationException("Implement me!");
+	  return new Node(startFolder);
   }
 
   /**
@@ -46,7 +49,11 @@ public abstract class Runner {
    * @return the list of traversed files (in order of traversal)
    */
   private List<File> getFiles(Tree tree, Class<? extends Traversal> traversalClass) {
-	  throw new UnsupportedOperationException("Implement me!");  
+    var list = new ArrayList<File>();
+    for(var file : tree.getIterable(traversalClass)) {
+      list.add(file.getFile());
+    }
+	  return list;
   }
 
   /**
@@ -65,7 +72,9 @@ public abstract class Runner {
    *          the list of files
    */
   private void printResults(List<File> selectedFiles) {
-	  throw new UnsupportedOperationException("Implement me!");
+	  for (var file : selectedFiles) {
+      System.out.println(file.getPath());
+    }
   }
 
 }

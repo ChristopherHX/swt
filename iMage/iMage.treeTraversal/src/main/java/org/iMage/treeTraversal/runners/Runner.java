@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.iMage.treeTraversal.model.Leaf;
 import org.iMage.treeTraversal.model.Node;
 import org.iMage.treeTraversal.model.Tree;
 import org.iMage.treeTraversal.traverser.Traversal;
@@ -32,10 +33,31 @@ public abstract class Runner {
    *
    * @param startFolder
    *          the start folder
+   * @param parent
+   *          the optional parent
+   * @return the {@link Tree}
+   */
+  private Tree buildFolderStructure(File startFolder, Tree parent) {
+    var folder = new Node(startFolder, parent);
+    for (var file : startFolder.listFiles()) {
+      if(file.isDirectory()) {
+        folder.addChild(buildFolderStructure(file));
+      } else {
+        folder.addChild(new Leaf(file, folder));
+      }
+    }
+    return folder;
+  }
+
+  /**
+   * Builds a {@link Tree} starting with a start folder.
+   *
+   * @param startFolder
+   *          the start folder
    * @return the {@link Tree}
    */
   private Tree buildFolderStructure(File startFolder) {
-	  return new Node(startFolder);
+    return buildFolderStructure(startFolder, null);
   }
 
   /**

@@ -3,7 +3,13 @@ package org.iMage.iLonghDe;
 import org.iMage.iLonghDe.base.IState;
 import org.iMage.iLonghDe.base.IStateMachine;
 
+/**
+ * States for the CoffeeMachine StateMachine
+ */
 public enum CoffeeMachineState implements IState {
+    /**
+     * The Machine is in standby
+     */
     Standby {
         @Override
         public void entry(IStateMachine machine) {
@@ -17,7 +23,7 @@ public enum CoffeeMachineState implements IState {
 
         @Override
         public CoffeeMachineState powerButtonPressed() {
-            return null;
+            return Off;
         }
 
         @Override
@@ -36,6 +42,9 @@ public enum CoffeeMachineState implements IState {
         }
     },
     
+    /**
+     * The Machine is waiting for input
+     */
     Waiting {
         @Override
         public void entry(IStateMachine machine) {
@@ -67,12 +76,15 @@ public enum CoffeeMachineState implements IState {
 
         @Override
         public CoffeeMachineState cleaningButtonPressed() {
-            return Cleaing;
+            return Cleaning;
         }
 
     },
 
-    Cleaing {
+    /**
+     * The Machine is cleaning itself
+     */
+    Cleaning {
         @Override
         public void entry(IStateMachine machine) {
             machine.display("Cleaning");
@@ -108,6 +120,9 @@ public enum CoffeeMachineState implements IState {
 
     },
 
+    /**
+     * The Machine is brewing Coffee
+     */
     Brewing {
         @Override
         public void entry(IStateMachine machine) {
@@ -179,36 +194,41 @@ public enum CoffeeMachineState implements IState {
             return this;
         }
 
-    }
-    ;
+    };
 
     /**
      * entry function
+     * @param machine Coffemachine object for display
      */
     public abstract void entry(IStateMachine machine);
 
     /**
      * exit function
+     * @param machine Coffemachine object for display
      */
     public abstract void exit(IStateMachine machine);
 
     /**
      * power Button pressed
+     * @return CoffeeMachineState enum after this button was pressed / same (no change)
      */
     public abstract CoffeeMachineState powerButtonPressed();
 
     /**
      * standby Button pressed
+     * @return CoffeeMachineState enum after this button was pressed / same (no change)
      */
     public abstract CoffeeMachineState  standbyButtonPressed();
 
     /**
      * coffee Button pressed
+     * @return CoffeeMachineState enum after this button was pressed / same (no change)
      */
     public abstract CoffeeMachineState  coffeeButtonPressed();
 
     /**
      * cleaning Button pressed
+     * @return CoffeeMachineState enum after this button was pressed / same (no change)
      */
     public abstract CoffeeMachineState  cleaningButtonPressed();
 }

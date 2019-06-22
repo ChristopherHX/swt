@@ -24,7 +24,7 @@ public class CoffeeMachineTest {
      * Tests Brewing Coffee
      */
     @Test
-    public void BrewingCoffeeTest() {
+    public void brewingCoffeeTest() {
         var standbystate = machine.getCurrentState();
         machine.standbyButtonPressed();
         var waitstate = machine.getCurrentState();
@@ -47,7 +47,7 @@ public class CoffeeMachineTest {
      * Tests Cleaning the machine
      */
     @Test
-    public void CleaningTest() {
+    public void cleaningTest() {
         var standbystate = machine.getCurrentState();
         machine.standbyButtonPressed();
         var waitstate = machine.getCurrentState();
@@ -59,5 +59,41 @@ public class CoffeeMachineTest {
         assertEquals(waitstate, machine.getCurrentState());
         machine.standbyButtonPressed();
         assertEquals(standbystate, machine.getCurrentState());
+    }
+
+    /**
+     * Waiting and turn off machine Test
+     */
+    @Test
+    public void waitingAndTurnOffTest() {
+        assertEquals(CoffeeMachineState.Standby, machine.getCurrentState());
+        machine.standbyButtonPressed();
+        assertEquals(CoffeeMachineState.Waiting, machine.getCurrentState());
+        machine.standbyButtonPressed();
+        assertEquals(CoffeeMachineState.Standby, machine.getCurrentState());
+        machine.powerButtonPressed();
+        assertEquals(CoffeeMachineState.Off, machine.getCurrentState());
+    }
+
+    /**
+     * Waiting, brewing, cleaning and turn off machine Test
+     */
+    @Test
+    public void waitingBrewingCleaningAndTurnOffTest() {
+        assertEquals(CoffeeMachineState.Standby, machine.getCurrentState());
+        machine.standbyButtonPressed();
+        assertEquals(CoffeeMachineState.Waiting, machine.getCurrentState());
+        machine.coffeeButtonPressed();
+        assertEquals(CoffeeMachineState.Brewing, machine.getCurrentState());
+        machine.standbyButtonPressed();
+        assertEquals(CoffeeMachineState.Standby, machine.getCurrentState());
+        machine.standbyButtonPressed();
+        assertEquals(CoffeeMachineState.Waiting, machine.getCurrentState());
+        machine.cleaningButtonPressed();
+        assertEquals(CoffeeMachineState.Cleaning, machine.getCurrentState());
+        machine.standbyButtonPressed();
+        assertEquals(CoffeeMachineState.Standby, machine.getCurrentState());
+        machine.powerButtonPressed();
+        assertEquals(CoffeeMachineState.Off, machine.getCurrentState());
     }
 }

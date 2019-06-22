@@ -10,13 +10,16 @@ import org.iMage.iLonghDe.base.IStateMachine;
 public class CoffeeMachine implements IStateMachine {
     private CoffeeMachineState currentstate;
 
+    /**
+     * Creates an CoffeMachine starting at standby
+     */
     public CoffeeMachine() {
         setState(CoffeeMachineState.Standby);
     }
 
     private void setState(CoffeeMachineState state) {
-        if(currentstate != state) {
-            if(currentstate != null) {
+        if (currentstate != state) {
+            if (currentstate != null) {
                 currentstate.exit(this);
             }
             currentstate = state;

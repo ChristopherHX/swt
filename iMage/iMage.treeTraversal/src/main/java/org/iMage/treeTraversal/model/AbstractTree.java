@@ -63,7 +63,7 @@ public abstract class AbstractTree implements Tree {
 
 	@Override
 	public final Iterable<Tree> getIterable(Class<? extends Traversal> traversal) {
-		return new Iterable<Tree>(){
+		return new Iterable<Tree>() {
 			@Override
 			public Iterator<Tree> iterator() {
 				return getIterator(traversal);

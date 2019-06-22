@@ -6,11 +6,16 @@ import org.iMage.treeTraversal.model.Node;
 import org.iMage.treeTraversal.model.Tree;
 
 /**
- * DepthTransversal
+ * DepthTranversal
+ * Implements deep Tranverse the folder stucture
  */
 public class DepthTranversal extends Traversal implements IVisitor {
     private Tree cur;
 
+    /**
+     * Tranverse deeply beginning at
+     * @param startItem root item
+     */
     public DepthTranversal(Tree startItem) {
         super(startItem);
         startItem.accept(this);
@@ -40,7 +45,7 @@ public class DepthTranversal extends Traversal implements IVisitor {
     @Override
     public void visit(Node node) {
         boolean isparentnode = cur != null && node == cur.getParent();
-        if(cur == node) {
+        if (cur == node) {
             cur = null;
         } else if (cur == null || isparentnode) {
             for (var tree : node.getChildren()) {

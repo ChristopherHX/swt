@@ -42,7 +42,7 @@ public abstract class Runner {
     var files = currentFolder.listFiles();
     if (files != null) {
       for (var file : files) {
-        if(file.isDirectory()) {
+        if (file.isDirectory()) {
           folder.addChild(buildFolderStructure(file, folder));
         } else {
           folder.addChild(new Leaf(file, folder));
@@ -74,7 +74,7 @@ public abstract class Runner {
    */
   private List<File> getFiles(Tree tree, Class<? extends Traversal> traversalClass) {
     var list = new ArrayList<File>();
-    for(var file : tree.getIterable(traversalClass)) {
+    for (var file : tree.getIterable(traversalClass)) {
       list.add(file.getFile());
     }
 	  return list;

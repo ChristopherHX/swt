@@ -9,6 +9,10 @@ import org.iMage.treeTraversal.traverser.Traversal;
  * Defines an element of a tree.
  */
 public interface Tree {
+  /**
+   * Accept an visitor
+   * @param visitor which visits this object
+   */
   void accept(IVisitor visitor);
 
   /**

@@ -5,11 +5,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * PNGRunner
+ * SingleFileExtensionRunner filter exactly one fileextension
  */
 public class SingleFileExtensionRunner extends Runner {
     private String extension;
 
+    /**
+     * Creates an Runner with prints files with only specified extensions
+     * @param extension extension to allow
+     */
     public SingleFileExtensionRunner(String extension) {
         this.extension = extension;
     }

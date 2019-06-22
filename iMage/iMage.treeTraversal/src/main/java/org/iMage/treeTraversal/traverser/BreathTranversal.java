@@ -15,7 +15,7 @@ public class BreathTranversal extends Traversal implements IVisitor {
     private Tree cur;
     private List<Node> nodes;
     private int nodei;
-    private IVisitor breathflatVisitor = new IVisitor(){
+    private IVisitor breathflatVisitor = new IVisitor() {
         @Override
         public void visit(Node node) {
         }
@@ -29,7 +29,7 @@ public class BreathTranversal extends Traversal implements IVisitor {
             }
         }
     };
-    private IVisitor breathrootVisitor = new IVisitor(){
+    private IVisitor breathrootVisitor = new IVisitor() {
         @Override
         public void visit(Node node) {
             for (var tree : node.getChildren()) {
@@ -46,7 +46,7 @@ public class BreathTranversal extends Traversal implements IVisitor {
             }
         }
     };
-    private IVisitor breathcollector = new IVisitor(){
+    private IVisitor breathcollector = new IVisitor() {
         @Override
         public void visit(Leaf leaf) {
         }
@@ -57,6 +57,10 @@ public class BreathTranversal extends Traversal implements IVisitor {
         }
     };
 
+    /**
+     * Tranverse breath beginning at
+     * @param startItem root item
+     */
     public BreathTranversal(Tree startItem) {
         super(startItem);
         nodes = new ArrayList<>();
@@ -75,7 +79,7 @@ public class BreathTranversal extends Traversal implements IVisitor {
         while (true) {
             while (nodei < nodes.size()) {
                 nodes.get(nodei).accept(breathrootVisitor);
-                if (cur != ret && cur != null){
+                if (cur != ret && cur != null) {
                     return ret;
                 }
                 nodei++;
@@ -86,7 +90,7 @@ public class BreathTranversal extends Traversal implements IVisitor {
             for (var node : nodes) {
                 node.accept(this);
             }
-            if(this.nodes.isEmpty()) {
+            if (this.nodes.isEmpty()) {
                 return ret;
             }
         }

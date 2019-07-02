@@ -15,25 +15,25 @@ public class BreathTraversal extends Traversal implements IVisitor {
     private Tree cur;
     private List<Node> nodes;
     private int nodei;
-    private IVisitor breathflatVisitor = new IVisitor() {
-        @Override
-        public void visit(Node node) {
-        }
-    
-        @Override
-        public void visit(Leaf leaf) {
-            if (cur == null) {
-                cur = leaf;
-            } else if (cur == leaf) {
-                cur = null;
-            }
-        }
-    };
+
     private IVisitor breathrootVisitor = new IVisitor() {
         @Override
         public void visit(Node node) {
-            for (var tree : node.getChildren()) {
-                tree.accept(breathflatVisitor);
+            if (cur == null) {
+                cur = node;
+            } else if (cur == node || node == cur.getParent()) {
+                if (cur == node) {
+                    cur = null;
+                }
+                for (var tree : node.getChildren()) {
+                    if (cur == null) {
+                        cur = tree;
+                        // Found no need for more loops
+                        break;
+                    } else if (cur == tree) {
+                        cur = null;
+                    }
+                }
             }
         }
     
@@ -65,7 +65,7 @@ public class BreathTraversal extends Traversal implements IVisitor {
         super(startItem);
         nodes = new ArrayList<>();
         startItem.accept(breathcollector);
-        startItem.accept(breathrootVisitor);
+        cur = startItem;
     }
 
     @Override

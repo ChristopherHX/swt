@@ -74,8 +74,11 @@ public abstract class Runner {
    */
   private List<File> getFiles(Tree tree, Class<? extends Traversal> traversalClass) {
     var list = new ArrayList<File>();
-    for (var file : tree.getIterable(traversalClass)) {
-      list.add(file.getFile());
+    for (var treeel : tree.getIterable(traversalClass)) {
+      File file = treeel.getFile();
+      if (file.isFile()) {
+        list.add(file);
+      }
     }
 	  return list;
   }

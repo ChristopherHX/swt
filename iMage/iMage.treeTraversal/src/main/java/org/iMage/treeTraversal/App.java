@@ -60,13 +60,17 @@ public final class App {
       System.err.println("Wrong command line arguments given: " + e.getMessage());
       System.exit(1);
     }
-    Runner runner = new SingleFileExtensionRunner(cmd.hasOption(PNG_OPT) ? ".png" : ".jpg");
-    var dir = new File(cmd.getOptionValue(DIRECTORY_OPT));
-    if (cmd.hasOption(BFS_OPT)) {
-      runner.run(dir, BreathTraversal.class);
-    } else {
-      runner.run(dir, DepthTraversal.class);
+    String extension = ".png";
+    if (cmd.hasOption(JPG_OPT)) {
+      if (cmd.hasOption(PNG_OPT)) {
+        System.err.println("-p and -j are incompatible");
+        return;
+      }
+      extension = ".jpg";
     }
+    new SingleFileExtensionRunner(extension)
+    .run(new File(cmd.getOptionValue(DIRECTORY_OPT)), 
+    cmd.hasOption(BFS_OPT) ? BreathTraversal.class : DepthTraversal.class);
   }
 
   /**

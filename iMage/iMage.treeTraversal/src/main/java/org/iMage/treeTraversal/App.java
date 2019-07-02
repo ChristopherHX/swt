@@ -10,8 +10,8 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.iMage.treeTraversal.runners.Runner;
 import org.iMage.treeTraversal.runners.SingleFileExtensionRunner;
-import org.iMage.treeTraversal.traverser.BreathTranversal;
-import org.iMage.treeTraversal.traverser.DepthTranversal;
+import org.iMage.treeTraversal.traverser.BreathTraversal;
+import org.iMage.treeTraversal.traverser.DepthTraversal;
 
 
 /**
@@ -63,9 +63,9 @@ public final class App {
     Runner runner = new SingleFileExtensionRunner(cmd.hasOption(PNG_OPT) ? ".png" : ".jpg");
     var dir = new File(cmd.getOptionValue(DIRECTORY_OPT));
     if (cmd.hasOption(BFS_OPT)) {
-      runner.run(dir, BreathTranversal.class);
+      runner.run(dir, BreathTraversal.class);
     } else {
-      runner.run(dir, DepthTranversal.class);
+      runner.run(dir, DepthTraversal.class);
     }
   }
 

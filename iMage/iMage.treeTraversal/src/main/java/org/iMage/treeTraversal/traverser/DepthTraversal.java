@@ -9,14 +9,14 @@ import org.iMage.treeTraversal.model.Tree;
  * DepthTranversal
  * Implements deep Tranverse the folder stucture
  */
-public class DepthTranversal extends Traversal implements IVisitor {
+public class DepthTraversal extends Traversal implements IVisitor {
     private Tree cur;
 
     /**
      * Tranverse deeply beginning at
      * @param startItem root item
      */
-    public DepthTranversal(Tree startItem) {
+    public DepthTraversal(Tree startItem) {
         super(startItem);
         startItem.accept(this);
     }

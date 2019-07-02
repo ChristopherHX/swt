@@ -11,7 +11,7 @@ import org.iMage.treeTraversal.model.Tree;
 /**
  * BreathTranversal
  */
-public class BreathTranversal extends Traversal implements IVisitor {
+public class BreathTraversal extends Traversal implements IVisitor {
     private Tree cur;
     private List<Node> nodes;
     private int nodei;
@@ -61,7 +61,7 @@ public class BreathTranversal extends Traversal implements IVisitor {
      * Tranverse breath beginning at
      * @param startItem root item
      */
-    public BreathTranversal(Tree startItem) {
+    public BreathTraversal(Tree startItem) {
         super(startItem);
         nodes = new ArrayList<>();
         startItem.accept(breathcollector);

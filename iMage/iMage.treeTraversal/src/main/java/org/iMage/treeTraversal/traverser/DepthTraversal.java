@@ -12,34 +12,6 @@ import org.iMage.treeTraversal.model.Tree;
 public class DepthTraversal extends Traversal implements IVisitor {
     private Tree cur;
 
-    private IVisitor itemVisitor = new IVisitor() {
-    
-        @Override
-        public void visit(Node node) {
-            boolean isparentnode = cur != null && node == cur.getParent();
-            if (cur == node) {
-                cur = null;
-            } else if (cur == null || isparentnode) {
-                for (var tree : node.getChildren()) {
-                    tree.accept(this);
-                }
-                if (cur == null && isparentnode && node.getParent() != null) {
-                    cur = node;
-                    cur.getParent().accept(this);
-                }
-            }
-        }
-    
-        @Override
-        public void visit(Leaf leaf) {
-            if (cur == null) {
-                cur = leaf;
-            } else if (cur == leaf) {
-                cur = null;
-            }
-        }
-    };
-
     /**
      * Traverse deeply beginning at
      * @param startItem root item
@@ -51,24 +23,52 @@ public class DepthTraversal extends Traversal implements IVisitor {
 
     @Override
     public boolean hasNext() {
+        // if cur is null no next item found after next
         return cur != null;
     }
 
     @Override
     public Tree next() {
         var ret = cur;
+        // Run the visitor to find next item
         cur.accept(this);
         return ret;
     }
 
+    private void onItem(Tree item) {
+        if (cur == null) {
+            // New item found set it
+            cur = item;
+        } else if (cur == item) {
+            // Old item found null it
+            cur = null;
+        }
+    }
+
     @Override
     public void visit(Leaf leaf) {
-        leaf.getParent().accept(itemVisitor);
+        // Lookup in parent folder
+        leaf.getParent().accept(this);
     }
 
     @Override
     public void visit(Node node) {
-        cur = null;
-        itemVisitor.visit(node);
+        if (cur == node) {
+            // cur is this its not a child of themself null it
+            cur = null;
+        }
+        var old = cur;
+        for (var tree : node.getChildren()) {
+            onItem(tree);
+            if (old != cur && cur != null) {
+                // next found exit
+                return;
+            }
+        }
+        if (cur == null && node != startItem) {
+            cur = node;
+            // Lookup in parent folder
+            node.getParent().accept(this);
+        }
     }
 }

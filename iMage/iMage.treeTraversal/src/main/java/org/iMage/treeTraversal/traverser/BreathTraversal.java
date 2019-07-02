@@ -58,7 +58,7 @@ public class BreathTraversal extends Traversal implements IVisitor {
     };
 
     /**
-     * Tranverse breath beginning at
+     * Traverse breath beginning at
      * @param startItem root item
      */
     public BreathTraversal(Tree startItem) {

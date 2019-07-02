@@ -7,13 +7,13 @@ import org.iMage.treeTraversal.model.Tree;
 
 /**
  * DepthTranversal
- * Implements deep Tranverse the folder stucture
+ * Implements deep Traverse the folder stucture
  */
 public class DepthTraversal extends Traversal implements IVisitor {
     private Tree cur;
 
     /**
-     * Tranverse deeply beginning at
+     * Traverse deeply beginning at
      * @param startItem root item
      */
     public DepthTraversal(Tree startItem) {

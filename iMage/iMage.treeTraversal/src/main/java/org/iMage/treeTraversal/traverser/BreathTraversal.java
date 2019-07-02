@@ -11,7 +11,7 @@ import org.iMage.treeTraversal.model.Tree;
 /**
  * BreathTranversal
  */
-public class BreathTraversal extends Traversal implements IVisitor {
+public class BreathTraversal extends Traversal {
     private Tree cur;
     private List<Node> nodes;
     private int nodei;
@@ -19,9 +19,8 @@ public class BreathTraversal extends Traversal implements IVisitor {
     private IVisitor breathrootVisitor = new IVisitor() {
         @Override
         public void visit(Node node) {
-            if (cur == null) {
-                cur = node;
-            } else if (cur == node || node == cur.getParent()) {
+            if (cur == null || cur == node || node == cur.getParent()) {
+                // no child of this folder set cur to null and find first item
                 if (cur == node) {
                     cur = null;
                 }
@@ -31,6 +30,7 @@ public class BreathTraversal extends Traversal implements IVisitor {
                         // Found no need for more loops
                         break;
                     } else if (cur == tree) {
+                        // Found old, now search next new node
                         cur = null;
                     }
                 }
@@ -39,13 +39,9 @@ public class BreathTraversal extends Traversal implements IVisitor {
     
         @Override
         public void visit(Leaf leaf) {
-            if (cur == null) {
-                cur = leaf;
-            } else if (cur == leaf) {
-                cur = null;
-            }
         }
     };
+    // Collect all subfolders
     private IVisitor breathcollector = new IVisitor() {
         @Override
         public void visit(Leaf leaf) {
@@ -53,6 +49,7 @@ public class BreathTraversal extends Traversal implements IVisitor {
     
         @Override
         public void visit(Node node) {
+            // Add this folder to the list
             nodes.add(node);
         }
     };
@@ -80,30 +77,26 @@ public class BreathTraversal extends Traversal implements IVisitor {
             while (nodei < nodes.size()) {
                 nodes.get(nodei).accept(breathrootVisitor);
                 if (cur != ret && cur != null) {
+                    // Found exit
                     return ret;
                 }
                 nodei++;
             }
+            // Not found go one depth deeper
             nodei = 0;
             var nodes = this.nodes;
             this.nodes = new ArrayList<>();
+            // Iterate over old folders (local nodes)
             for (var node : nodes) {
-                node.accept(this);
+                for (var tree : node.getChildren()) {
+                    // populate new folderlist (this.nodes)
+                    tree.accept(breathcollector);
+                }
             }
+            // no subfolders exit no next item found (cur == null)
             if (this.nodes.isEmpty()) {
                 return ret;
             }
-        }
-    }
-
-    @Override
-    public void visit(Leaf leaf) {
-    }
-
-    @Override
-    public void visit(Node node) {
-        for (var tree : node.getChildren()) {
-            tree.accept(breathcollector);
         }
     }
 }
